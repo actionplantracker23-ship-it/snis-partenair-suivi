@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#081C7E">
+<title>Plan des partenaires SNIS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+/* ============ CONFIGURATION ============
+   Laissez vide pour un fonctionnement local (données dans le navigateur).
+   Renseignez l'URL et la clé "anon public" de votre projet Supabase
+   pour partager les données entre tous les utilisateurs (voir README). */
+window.APP_CONFIG = {
+  SUPABASE_URL: "https://ayobscfeaogcrkculmhl.supabase.co",
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF5b2JzY2ZlYW9nY3JrY3VsbWhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExMzYzOTgsImV4cCI6MjEwNjcxMjM5OH0.fOMS-H16c1Mls99pcfyFDFpgu9UaXcP0lMI8Qw_l1Ho",
+  APP_NAME: "Plan des partenaires SNIS"
+};
+</script>
+<style>
+:root{
+  --navy:#081C7E; --navy-dark:#06155F; --bg:#F7F8FA; --card:#FFFFFF; --line:#E2E5EA; --text:#212529; --muted:#6B7280;
+  --teal:#00CEC0; --hover:#F1F3F6; --danger:#C62828;
+  box-sizing:border-box;
+}
+:root[data-theme="dark"]{--bg:#F7F8FA}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#F7F8FA}}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{font-family:"Rubik","Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:16px;display:flex;flex-direction:column;overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid #4C6FFF;outline-offset:2px}
+svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* Barre du haut */
+.appbar{background:var(--navy);color:#fff;display:flex;align-items:center;gap:14px;padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px;min-height:64px;flex:none}
+.appbar .ib{background:none;border:0;color:#fff;padding:8px;border-radius:50%;display:grid;place-items:center}
+.appbar .ib:hover{background:rgba(255,255,255,.12)}
+.applogo{width:36px;height:36px;border-radius:50%;background:#fff;display:grid;place-items:center;flex:none}
+.applogo svg{width:30px;height:30px}
+.appbar h1{font-size:1.45rem;font-weight:400;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appbar .acts{display:flex;gap:6px}
+.searchbar{background:var(--navy);padding:0 16px 12px;flex:none}
+.searchbar input{width:100%;border:0;border-radius:6px;padding:10px 12px;background:#fff;color:var(--text)}
+
+main{flex:1;overflow:auto;position:relative}
+.pad{padding:24px}
+
+/* Barre du bas */
+nav.bottom{background:var(--navy);display:grid;grid-template-columns:repeat(4,1fr);flex:none;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.bottom a{color:#fff;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px 10px;font-size:.95rem;position:relative;opacity:.95}
+nav.bottom a.on{font-weight:500}
+nav.bottom a.on::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:56px;height:4px;background:#fff;border-radius:3px 3px 0 0}
+.formbar{background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center;gap:18vw;padding:16px 0 calc(16px + env(safe-area-inset-bottom,0px));flex:none}
+.formbar button{background:none;border:0;font-size:1.15rem;padding:6px 18px}
+.formbar .save{color:var(--navy);font-weight:600}
+
+/* FAB */
+.fabs{position:fixed;right:24px;bottom:calc(110px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px;z-index:5}
+.fab{width:66px;height:66px;border-radius:50%;background:var(--navy);color:#fff;border:0;display:grid;place-items:center;box-shadow:0 4px 12px rgba(0,0,0,.28)}
+.fab svg.i{width:30px;height:30px}
+
+/* Grille des partenaires */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px 24px;padding:24px}
+.ptile{container-type:inline-size;background:#fff;border:1px solid var(--line);height:272px;position:relative;overflow:hidden;cursor:pointer;padding:0;text-align:left;border-radius:2px}
+.ptile:hover{box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.ptile img{width:100%;height:100%;object-fit:contain;display:block}
+.ptile .mono{width:100%;height:100%;display:grid;place-items:center;font-size:4.2rem;font-weight:600;letter-spacing:.01em;background:#fff!important;padding:0 12px 40px;text-align:center;line-height:1}
+.ptile .nm{position:absolute;left:36px;top:50%;margin-top:60px;font-size:1.3rem;color:#111;background:rgba(255,255,255,.6);padding:0 2px}
+
+/* Fiche détail */
+.detail{max-width:924px;margin:0 auto;background:#fff;min-height:100%}
+.fld{padding:14px 20px 4px}
+.fld .lb{font-size:.85rem;color:#444;margin-bottom:6px}
+.fld .vl{font-size:1.35rem;line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere}
+.fld .row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.fld a.mail{color:var(--muted)}
+.photo{position:relative;display:flex;align-items:center;justify-content:center;padding:10px 20px 30px;min-height:180px}
+.photo img{max-width:100%;max-height:220px;object-fit:contain}
+.photo .mono{min-width:200px;height:150px;display:grid;place-items:center;font-size:4rem;font-weight:600;background:#fff!important}
+.navarr{position:fixed;top:50%;width:66px;height:66px;border-radius:50%;background:#E9EAED;border:0;display:grid;place-items:center;color:#555;z-index:3}
+.navarr.l{left:calc(50% - 530px)}.navarr.r{right:calc(50% - 530px)}
+.sep{border-top:2px solid var(--line);margin:8px 0}
+.relhead{display:flex;align-items:center;gap:10px;padding:16px 20px;font-size:.95rem}
+.badge{background:#EEF0F3;border-radius:3px;padding:1px 6px;font-size:1.05rem}
+.chart{padding:0 20px 20px}
+.rel{border-top:1px solid var(--line)}
+.rel button{display:flex;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:14px 20px;gap:12px;justify-content:space-between;align-items:center}
+.rel button:hover{background:var(--hover)}
+.rel .t{font-size:1rem}.rel .s{font-size:.85rem;color:var(--muted);margin-top:3px}
+.stat-icon{display:flex;flex-direction:column;align-items:center;gap:4px;padding:28px 0 6px;font-size:.8rem;font-weight:600;color:#333}
+.stat-icon span{width:46px;height:46px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center}
+.datein{border:1px solid #ccc;border-radius:4px;padding:12px 14px;font-size:1.3rem;width:100%;margin-top:4px}
+.note{display:flex;gap:16px;padding:14px 20px;border-top:1px solid var(--line);align-items:flex-start}
+.note svg.i{width:38px;height:38px;color:#2D6BEE}
+.note .d{color:var(--muted);font-size:.9rem}
+.note .x{margin-top:4px;white-space:pre-wrap}
+
+/* Kanban */
+.kanban{display:flex;gap:14px;padding:12px 10px;height:100%;overflow-x:auto}
+.kcol{background:#fff;border:1px solid var(--line);min-width:230px;flex:1;display:flex;flex-direction:column;max-height:100%}
+.kcol h2{font-size:1.15rem;font-weight:600;margin:0;padding:12px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.kcol h2 small{font-weight:400;color:var(--muted);font-size:.85rem}
+.klist{overflow-y:auto;flex:1}
+.kcard{display:flex;gap:6px;padding:14px 12px 14px 28px;cursor:pointer;border-bottom:1px solid #F0F1F3}
+.kcard:hover,.kcard.sel{background:#F2F2F2}
+.kcard .t{font-size:1.15rem;line-height:1.3}
+.kcard .p{font-size:.85rem;color:var(--muted);margin-top:4px}
+.kcard .more{background:none;border:0;padding:4px;align-self:center;color:#444}
+.empty{display:grid;place-items:center;height:100%;min-height:200px;color:#555;font-size:1.1rem}
+.kdetail{background:#fff;border:1px solid var(--line);min-width:300px;flex:1.2;display:flex;flex-direction:column;max-height:100%}
+.kdetail .body{overflow-y:auto;flex:1;position:relative}
+.kdetail .ifabs{position:sticky;bottom:12px;display:flex;flex-direction:column;align-items:flex-end;gap:14px;padding-right:12px;pointer-events:none}
+.kdetail .ifabs .fab{pointer-events:auto}
+
+/* Tableau inline */
+table.inline{border-collapse:collapse;width:100%;min-width:900px;background:#fff}
+.inline th{text-align:left;font-weight:400;font-size:1.05rem;padding:16px 15px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);position:sticky;top:0;background:#fff}
+.inline td{padding:14px 15px;border-bottom:1px solid var(--line);font-size:1.02rem;max-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inline tr.grp td{background:#F7F8FA;padding:14px 15px}
+.inline tr.it{cursor:pointer}.inline tr.it:hover{background:var(--hover)}
+
+/* Calendrier */
+.cal{display:grid;grid-template-columns:minmax(300px,1fr) 2fr;gap:14px;padding:12px;height:100%}
+.panel{background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.panel>h2{font-size:1.15rem;font-weight:600;margin:0;padding:12px 18px}
+.uplist{overflow-y:auto;flex:1}
+.update{background:#F7F8FA;padding:8px 14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.upit{padding:12px 14px 6px 20px;cursor:pointer;border-bottom:1px solid var(--line)}
+.upit:hover{background:var(--hover)}
+.upit .r1{display:flex;justify-content:space-between;gap:12px;font-weight:500}
+.upit .r1 span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.upit .r1 small{font-weight:400;white-space:nowrap}
+.upit .p{color:#444;margin-top:6px}
+.upit .c{display:flex;justify-content:flex-end;color:#555}
+.calmodes{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;border-bottom:1px solid var(--line);padding:0 18px}
+.calmodes .m{grid-column:2;display:flex;gap:20px}
+.calmodes button{background:none;border:0;font-size:1.3rem;color:#777;padding:14px 0 8px;border-bottom:3px solid transparent}
+.calmodes button.on{color:#222;border-bottom-color:var(--navy)}
+.calmodes .today{justify-self:end;color:var(--navy);font-weight:600;font-size:1.2rem}
+.calnav{display:flex;justify-content:center;align-items:center;gap:90px;padding:16px 0 8px;font-size:1.3rem}
+.calnav button{background:none;border:0;padding:4px 10px}
+.month{display:grid;grid-template-columns:repeat(7,1fr);flex:1;overflow-y:auto}
+.month .dh{text-align:center;color:#555;padding:6px 0 12px;border-bottom:1px solid var(--line)}
+.month .dc{border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-height:96px;padding:6px 4px;text-align:center;font-size:1.05rem}
+.month .dc.out{color:transparent}
+.month .num{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%}
+.month .num.today{background:var(--navy);color:#fff;font-weight:600}
+.evt{display:block;width:100%;background:var(--navy);color:#fff;border:0;border-radius:3px;font-size:.75rem;padding:2px 4px;margin-top:3px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.daylist{padding:10px 18px;overflow-y:auto}
+
+/* Formulaires */
+.form{max-width:720px;margin:0 auto;background:#fff;padding:40px 36px 30px}
+.frow{display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:start;margin-bottom:28px}
+.frow>label{color:#555;padding-top:14px}
+.frow input:not([type=checkbox]),.frow select,.frow textarea{width:100%;border:1px solid #BFC3C9;border-radius:3px;padding:16px 14px;background:#fff}
+.frow textarea{min-height:100px;resize:vertical}
+.filebox{border:1px solid #BFC3C9;border-radius:3px;min-height:84px;display:grid;place-items:center;cursor:pointer;color:#555;text-align:center;padding:10px}
+.filebox img{max-height:120px;max-width:100%}
+.checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;padding-top:10px}
+.checks label{display:flex;gap:8px;align-items:center}
+.req{color:var(--danger)}
+
+/* Liste générique */
+.list{max-width:924px;margin:0 auto;background:#fff}
+.list .it{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--line);cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left}
+.list .it:hover{background:var(--hover)}
+.list .it .t{font-size:1.05rem}.list .it .s{font-size:.85rem;color:var(--muted);margin-top:3px}
+.list h3{margin:0;padding:12px 20px;background:#F7F8FA;font-weight:500;font-size:1rem;border-bottom:1px solid var(--line)}
+
+/* Menu latéral */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;left:0;top:0;bottom:0;width:min(446px,86vw);background:#fff;z-index:21;transform:translateX(-100%);transition:transform .22s;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.drawer.on{transform:none}
+.drawer .hd{display:flex;align-items:center;gap:24px;padding:24px 22px;border-bottom:1px solid var(--line)}
+.drawer .hd .applogo{width:46px;height:46px;border:1px solid var(--line)}
+.drawer .hd .applogo svg{width:40px;height:40px}
+.drawer .hd b{font-weight:400;font-size:1.6rem}
+.drawer a,.drawer button.mi{display:flex;align-items:center;gap:22px;padding:17px 20px;color:var(--text);text-decoration:none;font-size:1.15rem;background:none;border:0;width:100%;text-align:left}
+.drawer a:hover,.drawer button.mi:hover{background:var(--hover)}
+.drawer hr{border:0;border-top:1px solid var(--line);margin:4px 14px}
+.drawer .ft{margin-top:auto;border-top:1px solid var(--line);padding:22px 20px}
+.drawer .user{display:flex;align-items:center;gap:16px;color:var(--muted)}
+.drawer .av{width:48px;height:48px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:1.3rem;flex:none}
+.drawer .logout{display:block;margin-left:auto;margin-top:14px;background:none;border:0;color:var(--navy);font-size:1.2rem}
+
+/* Menus contextuels, toast, connexion */
+.sheet{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.4)}
+.sheet.on{display:flex}
+.sheet .box{background:#fff;border-radius:6px;min-width:280px;max-width:92vw;padding:8px 0;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.sheet .box h4{margin:0;padding:12px 20px;font-weight:500;color:var(--muted);font-size:.9rem}
+.sheet .box button{display:block;width:100%;text-align:left;background:none;border:0;padding:14px 20px;font-size:1.05rem}
+.sheet .box button:hover{background:var(--hover)}
+.toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#323232;color:#fff;padding:12px 18px;border-radius:4px;z-index:40;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw}
+.toast.on{opacity:1}
+.login{max-width:420px;margin:12vh auto;background:#fff;border:1px solid var(--line);padding:36px;text-align:center}
+.login .applogo{margin:0 auto 18px;width:72px;height:72px;border:1px solid var(--line)}
+.login .applogo svg{width:62px;height:62px}
+.login input{width:100%;border:1px solid #BFC3C9;border-radius:3px;padding:14px;margin:18px 0 12px}
+.btnp{background:var(--navy);color:#fff;border:0;border-radius:4px;padding:13px 22px;font-weight:500;width:100%}
+
+@media (max-width:900px){
+  .ptile .mono{padding-bottom:30px}
+  .pgrid{grid-template-columns:repeat(2,1fr);gap:12px;padding:12px}
+  .ptile{height:170px}.ptile .nm{left:12px;margin-top:40px;font-size:1rem}.ptile .mono{font-size:2.2rem}
+  .navarr{display:none}
+  .kcol,.kdetail{min-width:82vw}
+  .kdetail{display:none}
+  .cal{grid-template-columns:1fr;height:auto}
+  .cal .panel:first-child{max-height:50vh}
+  .frow{grid-template-columns:1fr;gap:6px}.frow>label{padding-top:0}
+  .form{padding:24px 18px}
+  .appbar h1{font-size:1.2rem}
+  nav.bottom a{font-size:.8rem}
+  .fabs{right:16px;bottom:calc(90px + env(safe-area-inset-bottom,0px))}
+  .calnav{gap:30px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="appbar">
+  <span id="lead"></span>
+  <span class="applogo" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="none" stroke="#2D8BC9" stroke-width="1.6"/><path d="M6 19c4-9 24-9 28 0" fill="none" stroke="#2DB7A3" stroke-width="1.6"/><circle cx="14" cy="18" r="3" fill="#5B6FD8"/><circle cx="26" cy="18" r="3" fill="#E0557A"/><circle cx="20" cy="15" r="3.4" fill="#F2A33A"/><path d="M9 29c1-5 9-5 10 0M21 29c1-5 9-5 10 0M14 27c1-6 11-6 12 0" fill="none" stroke="#2D3E8F" stroke-width="1.6"/></svg></span>
+  <h1 id="title">Partenaires SNIS</h1>
+  <div class="acts" id="acts"></div>
+</header>
+<div class="searchbar" id="searchbar" hidden><input id="q" type="search" placeholder="Rechercher…" aria-label="Rechercher"></div>
+<main id="main"></main>
+<div class="fabs" id="fabs"></div>
+<nav class="bottom" id="bottom">
+  <a href="#/tache/new" data-nav="new"><svg class="i"><use href="#i-plus"/></svg>Nouvelle activité</a>
+  <a href="#/tracker" data-nav="tracker"><svg class="i"><use href="#i-layers"/></svg>Tracker</a>
+  <a href="#/calendar" data-nav="calendar"><svg class="i"><use href="#i-cal"/></svg>Calendar</a>
+  <a href="#/produits" data-nav="produits"><svg class="i"><use href="#i-list"/></svg>Produits</a>
+</nav>
+<div class="formbar" id="formbar" hidden><button id="fCancel">Cancel</button><button class="save" id="fSave">Save</button></div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Menu">
+  <div class="hd"><span class="applogo" id="dLogo"></span><b id="dName">Plan des partenaires SNIS</b></div>
+  <a href="#/produits"><svg class="i"><use href="#i-list"/></svg>Liste des produits</a>
+  <a href="#/partenaires"><svg class="i"><use href="#i-users"/></svg>Partenaires SNIS</a>
+  <a href="#/workstreams"><svg class="i"><use href="#i-pulse"/></svg>Workstreams</a>
+  <a href="#/tracker-inline"><svg class="i"><use href="#i-table"/></svg>Tracker Inline</a>
+  <hr>
+  <a href="#/about"><svg class="i"><use href="#i-info"/></svg>About</a>
+  <button class="mi" id="shareBtn"><svg class="i"><use href="#i-share"/></svg>Share</button>
+  <button class="mi" id="exportBtn"><svg class="i"><use href="#i-down"/></svg>Exporter (CSV)</button>
+  <div class="ft"><div class="user"><span class="av" id="uAv">L</span><span id="uMail">Mode local (ce navigateur)</span></div><button class="logout" id="logout" hidden>Log Out</button></div>
+</aside>
+<div class="sheet" id="sheet"><div class="box" id="sheetBox"></div></div>
+<input type="file" id="filePick" hidden>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h13M3 18h9"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M20 12H4M10 6l-6 6 6 6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16" stroke-width="3"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5M3 17l9 5 9-5"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="1"/><path d="M4 10h16M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4.5" cy="6" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor"/><circle cx="4.5" cy="18" r="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><circle cx="5" cy="10" r="2.2"/><circle cx="19" cy="10" r="2.2"/><path d="M6 20c0-4 3-6 6-6s6 2 6 6M1.5 18c0-2.5 1.6-4 3.5-4M22.5 18c0-2.5-1.6-4-3.5-4"/></symbol>
+  <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M2 14h5V5h4v14h4v-9h7"/></symbol>
+  <symbol id="i-table" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16"/><path d="M3 9h18M3 14h18M10 4v16"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M4 20h16"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" fill="currentColor"/><rect x="13" y="3" width="8" height="8" fill="currentColor"/><rect x="3" y="13" width="8" height="8" fill="currentColor"/><rect x="13" y="13" width="8" height="8" fill="currentColor"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12l3 3 5-6"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 6h16M9 6V4h6v2M6 6l1 15h10l1-15M10 10v8M14 10v8"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></symbol>
+  <symbol id="i-editbox" viewBox="0 0 24 24"><path d="M11 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6"/><path d="M18 3l3 3-9 9H9v-3l9-9z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 4h16v12H9l-5 4V4z"/><path d="M8 9h8M8 12h5"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1" fill="currentColor" stroke="none"/><path d="M3 6l9 7 9-7" stroke="#fff"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" stroke-width="2.6"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7" stroke-width="1.5"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="1.5"/><path d="M9 3h6v3H9zM8.5 11h7M8.5 14.5h7M8.5 18h4"/></symbol>
+  <symbol id="i-pdf" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z" fill="#555" stroke="none"/><path d="M9 17c2-1 4-6 3-8s-2 3 1 6 4 2 3 1-5-1-7 1" stroke="#fff" stroke-width="1.2"/></symbol>
+  <symbol id="s-NotStarted" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/></symbol>
+  <symbol id="s-InProgress" viewBox="0 0 24 24"><path d="M13 6l-6 6 6 6M19 6l-6 6 6 6" stroke-width="3"/></symbol>
+  <symbol id="s-Complete" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" stroke-width="3"/></symbol>
+  <symbol id="s-Enattente" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12" stroke-width="3"/></symbol>
+  <symbol id="s-Cancel" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke-width="3"/></symbol>
+</svg>
+
+<script>
+"use strict";
+const SEED = {"partenaires": [{"id": "b34355c6-c9a2-5116-9be4-216a551465e2", "nom": "Bluesquare", "email": "", "contacts": "", "photo": ""}, {"id": "7e08b8ed-adbc-5adb-88c0-6bfbc066483a", "nom": "PATH", "email": "", "contacts": "", "photo": ""}, {"id": "8d788493-6430-5cfd-9c18-3fb8f08946fb", "nom": "Living Goods", "email": "", "contacts": "", "photo": ""}, {"id": "26fedf4b-4359-5152-a4f3-e8e57536e20b", "nom": "CHAI", "email": "", "contacts": "", "photo": ""}, {"id": "3267e4cd-ab2b-5d0c-9152-0707965e6666", "nom": "OMS", "email": "", "contacts": "", "photo": ""}, {"id": "a34cc987-58d4-53dd-8a9c-b88c198fdb6e", "nom": "DAVYCAS International", "email": "", "contacts": "", "photo": ""}, {"id": "a74da157-c9a9-55fc-9884-11393c34c2c0", "nom": "Enabel", "email": "", "contacts": "", "photo": ""}, {"id": "0f995965-2b3e-500e-bb8c-69b1b113ed11", "nom": "Pathfinder", "email": "", "contacts": "", "photo": ""}, {"id": "6b75d8c1-2db7-503b-b050-e951704ec28c", "nom": "PSM", "email": "", "contacts": "", "photo": ""}, {"id": "b63c8fa6-7ce2-56b3-9f5b-a7f81c8307fc", "nom": "EpiC", "email": "", "contacts": "", "photo": ""}, {"id": "28261bd7-73c3-5f9f-9796-4f8d4586d45d", "nom": "REACH", "email": "", "contacts": "", "photo": ""}], "taches": [{"id": "474e0b0d-4fb6-5db7-849c-d59d86d96435", "partenaires": ["b34355c6-c9a2-5116-9be4-216a551465e2", "7e08b8ed-adbc-5adb-88c0-6bfbc066483a", "8d788493-6430-5cfd-9c18-3fb8f08946fb"], "activite": "Track Palu/Gates", "task": "Consolider le bus d'interopérabilité OpenHexa avec les pipelines pour les bases identifiées", "due": null, "status": "In Progress", "direction": "DSI", "pilier": "Information sanitaire", "snsc": "Indirect : intégration des données communautaires (eSantéCom, PGA) dans le SNIS", "numerique": "Architecture d'entreprise de la santé numérique : interopérabilité, hébergement local"}, {"id": "6010a111-6133-5d15-95a3-abbd263d710c", "partenaires": ["b34355c6-c9a2-5116-9be4-216a551465e2"], "activite": "Track Palu/Gates", "task": "Appui technique pour assurer la disponibilité et le focntionnement (update, upgrade) de la plateforme d'interopérabilité Openhexa en local hosting dans les serveurs du Ministère de la santé", "due": null, "status": "In Progress", "direction": "DSI", "pilier": "Information sanitaire", "snsc": "Indirect : intégration des données communautaires (eSantéCom, PGA) dans le SNIS", "numerique": "Architecture d'entreprise de la santé numérique : interopérabilité, hébergement local"}, {"id": "15c96bb3-856c-562a-9d2b-fd100a57016e", "partenaires": ["b34355c6-c9a2-5116-9be4-216a551465e2", "26fedf4b-4359-5152-a4f3-e8e57536e20b"], "activite": "Track Palu/Gates", "task": "Réalisation d'au moins 95% les activités inscrites dans la feuille de route ReDoP avec le parténaire CHAI", "due": null, "status": "In Progress", "direction": "SP/Palu", "pilier": "Prestations de services", "snsc": "Distribution et prévention à base communautaire (CPS, MILDA)", "numerique": "Pilotage de la lutte antipaludique par les données (ReDoP)"}, {"id": "843ca2ed-5526-5d41-a28f-1429b862598c", "partenaires": ["b34355c6-c9a2-5116-9be4-216a551465e2"], "activite": "Track Palu/Gates", "task": "Mise à jour des données populationnelles projetées et par cibles suivant le nouveau découpage administratif du pays", "due": null, "status": "Not Started", "direction": "DSSE", "pilier": "Information sanitaire", "snsc": "Rattachement des ASBC aux formations sanitaires et aux zones desservies", "numerique": "Registre unique des structures (MFL) et services numériques associés"}, {"id": "2c9c43a0-8896-5259-9034-7ee84ba15ee9", "partenaires": ["b34355c6-c9a2-5116-9be4-216a551465e2", "26fedf4b-4359-5152-a4f3-e8e57536e20b"], "activite": "Track Palu/Gates", "task": "Contribuer à la digitalisation de la carte sanitaire avec le parténaire CHAI", "due": null, "status": "Not Started", "direction": "DPPSE", "pilier": "Information sanitaire", "snsc": "Rattachement des ASBC aux formations sanitaires et aux zones desservies", "numerique": "Registre unique des structures (MFL) et services numériques associés"}, {"id": "ce0dffda-85fe-56c9-abaa-fd4d2915a79e", "partenaires": ["b34355c6-c9a2-5116-9be4-216a551465e2"], "activite": "Track Palu/Gates", "task": "MFL augmenté update tenant compte du nouveau découpage administratif du pays et des ouvertures et fermetures", "due": null, "status": "In Progress", "direction": "DSSE", "pilier": "Information sanitaire", "snsc": "Rattachement des ASBC aux formations sanitaires et aux zones desservies", "numerique": "Registre unique des structures (MFL) et services numériques associés"}, {"id": "6817a7e0-c06d-57c3-802c-dcb0a9ad176d", "partenaires": ["b34355c6-c9a2-5116-9be4-216a551465e2", "26fedf4b-4359-5152-a4f3-e8e57536e20b"], "activite": "Track Palu/Gates", "task": "Developpement et deploiement d'une application mobile de la MFL", "due": null, "status": "Not Started", "direction": "DSSE/DPPSE/DSI", "pilier": "Information sanitaire", "snsc": "Rattachement des ASBC aux formations sanitaires et aux zones desservies", "numerique": "Registre unique des structures (MFL) et services numériques associés"}, {"id": "926c3aed-2afa-5e23-bb41-25dd237ba75b", "partenaires": ["b34355c6-c9a2-5116-9be4-216a551465e2"], "activite": "Track Palu/Gates", "task": "Appui technique pour assurer la disponibilité et le focntionnement (update, upgrade) de la plateforme SUPERSET de conception de dashboard en local hosting dans les serveurs du Ministère de la santé", "due": null, "status": "In Progress", "direction": "DSI", "pilier": "Information sanitaire", "snsc": "Exploitation des données communautaires (tableaux de bord, revues de données)", "numerique": "Valorisation des données : visualisation et analyse (Superset, CIS)"}, {"id": "2c369750-df62-556a-8293-6ceb23a065c8", "partenaires": ["b34355c6-c9a2-5116-9be4-216a551465e2"], "activite": "Track Palu/Gates", "task": "Renforcement de capacités et appui technique à la concetion de dashboards avec SUPERSET", "due": null, "status": "In Progress", "direction": "DSI et autres directions", "pilier": "Information sanitaire", "snsc": "Exploitation des données communautaires (tableaux de bord, revues de données)", "numerique": "Valorisation des données : visualisation et analyse (Superset, CIS)"}, {"id": "60e1d4a3-420d-5912-b1df-f2c1a3ba878b", "partenaires": ["b34355c6-c9a2-5116-9be4-216a551465e2"], "activite": "Track Palu/Gates", "task": "Intégration et deployement du dashboard surveillance au CIS", "due": null, "status": "In Progress", "direction": "DPSP", "pilier": "Information sanitaire", "snsc": "Remontée des données de surveillance depuis la base", "numerique": "Notification électronique de la surveillance (TLOH Mobile, STELAB)"}, {"id": "cea67de7-cdf0-53fe-9be9-247b636c3451", "partenaires": ["b34355c6-c9a2-5116-9be4-216a551465e2", "7e08b8ed-adbc-5adb-88c0-6bfbc066483a"], "activite": "Track Palu/Gates", "task": "Renforcement de capacités des techniciens au niveau de la DSI", "due": null, "status": "In Progress", "direction": "DSI", "pilier": "Ressources humaines", "snsc": "Formation des acteurs, y compris e-learning des ASBC", "numerique": "Développement des compétences numériques des directions et services"}, {"id": "c66806da-9e55-5d6e-b857-a1727a88ea4a", "partenaires": ["b34355c6-c9a2-5116-9be4-216a551465e2"], "activite": "Track Palu/Gates", "task": "Renforcement de capacités des techniciens au niveau de la DSSE", "due": null, "status": "In Progress", "direction": "DSSE", "pilier": "Ressources humaines", "snsc": "Formation des acteurs, y compris e-learning des ASBC", "numerique": "Développement des compétences numériques des directions et services"}, {"id": "0eb63526-43a8-5313-990f-40edc683de84", "partenaires": ["b34355c6-c9a2-5116-9be4-216a551465e2", "26fedf4b-4359-5152-a4f3-e8e57536e20b"], "activite": "Track Palu/Gates", "task": "Renforcement de capacités des techniciens au niveau de la DPPSE", "due": null, "status": "In Progress", "direction": "DPPSE", "pilier": "Ressources humaines", "snsc": "Formation des acteurs, y compris e-learning des ASBC", "numerique": "Développement des compétences numériques des directions et services"}, {"id": "66c320c8-4e3e-596f-9a2b-b299db8a9d1d", "partenaires": ["b34355c6-c9a2-5116-9be4-216a551465e2", "26fedf4b-4359-5152-a4f3-e8e57536e20b"], "activite": "Track Palu/Gates", "task": "Renforcement de capacités des techniciens au niveau du SP/Palu", "due": null, "status": "In Progress", "direction": "SP/Palu", "pilier": "Ressources humaines", "snsc": "Formation des acteurs, y compris e-learning des ASBC", "numerique": "Développement des compétences numériques des directions et services"}, {"id": "554aa803-88b5-5a17-a1db-cf68430008bc", "partenaires": ["3267e4cd-ab2b-5d0c-9152-0707965e6666"], "activite": "SIS/santé numérique", "task": "La gouvernance de la santé numérique et du système d’information est efficace à travers la redynamisation des instances de coordination du SNIS et la e-santé ainsi que l’animation du sous-groupe PTF-SNIS", "due": null, "status": "Not Started", "direction": "DSI, DSSE", "pilier": "Gouvernance", "snsc": "Coordination des interventions de santé à base communautaire", "numerique": "Gouvernance de la santé numérique et du SNIS (plan stratégique, instances)"}, {"id": "e544749c-4fdc-5ae7-8d5a-f58af7112301", "partenaires": ["3267e4cd-ab2b-5d0c-9152-0707965e6666"], "activite": "SIS/santé numérique", "task": "La mise en place du SIH électronique à l’hôpital de Bogodogo est démarrée et au moins deux modules prioritaires sont fonctionnels", "due": null, "status": "In Progress", "direction": "DSI, Bogodogo, DSSE", "pilier": "Prestations de services", "snsc": "Référence et contre-référence avec le niveau communautaire", "numerique": "Dossier patient et SIH électroniques ; certification électronique des causes de décès"}, {"id": "75269e17-a5e6-5497-a799-6f170c27bdc7", "partenaires": ["3267e4cd-ab2b-5d0c-9152-0707965e6666", "a34cc987-58d4-53dd-8a9c-b88c198fdb6e"], "activite": "SIS/santé numérique", "task": "La digitalisation du TLOH jusqu’au niveau des formations sanitaires est effective et les données électroniques de la surveillance hebdomadaire sont transmis à travers l’application TLOH Mobile de STELAB", "due": null, "status": "In Progress", "direction": "DPSP", "pilier": "Information sanitaire", "snsc": "Remontée des données de surveillance depuis la base", "numerique": "Notification électronique de la surveillance (TLOH Mobile, STELAB)"}, {"id": "08dcea4c-c9e1-53e0-82c1-df2a9ffa5c73", "partenaires": ["3267e4cd-ab2b-5d0c-9152-0707965e6666"], "activite": "SIS/santé numérique", "task": "La finalisation et la publication du plan stratégique SNIS assortis de prospectus permettra d’assurer une appropriation.", "due": null, "status": "In Progress", "direction": "DSSE", "pilier": "Gouvernance", "snsc": "Coordination des interventions de santé à base communautaire", "numerique": "Gouvernance de la santé numérique et du SNIS (plan stratégique, instances)"}, {"id": "b7fc3faa-2efd-5c70-a659-3a4864b4cb43", "partenaires": ["3267e4cd-ab2b-5d0c-9152-0707965e6666"], "activite": "SIS/santé numérique", "task": "La disponibilité du document de normes d’interopérabilité est aussi une priorité en vue de soutenir la mise en œuvre de l’architecture d’entreprise de la santé numérique adopté par le ministère de la santé.", "due": null, "status": "Not Started", "direction": "DSI", "pilier": "Information sanitaire", "snsc": "Indirect : intégration des données communautaires (eSantéCom, PGA) dans le SNIS", "numerique": "Architecture d'entreprise de la santé numérique : interopérabilité, hébergement local"}, {"id": "8a82f4e3-39cd-59ff-b0db-f65312f9ad80", "partenaires": ["3267e4cd-ab2b-5d0c-9152-0707965e6666"], "activite": "SIS/santé numérique", "task": "L’annuaire statistique 2025, le rapport 2025 sur l’état de santé de la population ainsi que le livret de statistique de poche pour les décideurs sont disponibles pour soutenir la valorisation des données et la prise de décision basée sur les évidences", "due": null, "status": "In Progress", "direction": "DSSE, ONSP", "pilier": "Information sanitaire", "snsc": "Exploitation des données communautaires (tableaux de bord, revues de données)", "numerique": "Valorisation des données : visualisation et analyse (Superset, CIS)"}, {"id": "22ee67ad-b585-5d67-b2ff-1b56430b2c17", "partenaires": ["3267e4cd-ab2b-5d0c-9152-0707965e6666"], "activite": "SIS/santé numérique", "task": "La certification médicale des causes de décès est fonctionnelle dans les quatre hôpitaux ayant commencé l’implémentation en 2025.", "due": null, "status": "In Progress", "direction": "DSSE, DSI", "pilier": "Prestations de services", "snsc": "Référence et contre-référence avec le niveau communautaire", "numerique": "Dossier patient et SIH électroniques ; certification électronique des causes de décès"}, {"id": "1ee96e77-4990-5cdd-a156-e3ef7ab1ae0c", "partenaires": ["a74da157-c9a9-55fc-9884-11393c34c2c0"], "activite": "SIS/santé numérique", "task": "appui a la disséniation du plan stratégique du SNIS 2026-2030", "due": null, "status": "In Progress", "direction": "DSSE", "pilier": "Gouvernance", "snsc": "Indirect : diffusion aux acteurs de terrain", "numerique": "Gouvernance de la santé numérique et du SNIS"}, {"id": "92294e1d-5910-5f40-bd40-831ca8918fbb", "partenaires": ["a74da157-c9a9-55fc-9884-11393c34c2c0"], "activite": "SIS/santé numérique", "task": "appui au district sanitiare de dédougou et au CHR de tenkodogo pour le renforcement du SNIS", "due": null, "status": "In Progress", "direction": "District de Dédougou et CHR de Tenkodogo", "pilier": "Information sanitaire", "snsc": "Appui aux districts, interface avec les agents communautaires", "numerique": "Renforcement du SNIS au niveau périphérique"}, {"id": "309da140-411e-525d-ad28-c581029a510c", "partenaires": ["26fedf4b-4359-5152-a4f3-e8e57536e20b", "0f995965-2b3e-500e-bb8c-69b1b113ed11"], "activite": "Flux financiers (gestion financière)", "task": "Renforcement de capacité à l'analyse et l'utilisation des données", "due": null, "status": "Not Started", "direction": "ST RFS", "pilier": "Financement", "snsc": "Indirect : suivi des ressources allouées aux niveaux déconcentrés", "numerique": "Données financières et de ressources utilisées pour la décision"}, {"id": "5101521d-522b-5ab6-9b91-0b2f1ddf43d5", "partenaires": ["26fedf4b-4359-5152-a4f3-e8e57536e20b"], "activite": "E-Santé Libre (URL Free)", "task": "Étendre le service à toutes les plateformes du ministère de la Santé.", "due": null, "status": "In Progress", "direction": "DSI", "pilier": "Information sanitaire", "snsc": "Indirect : accès des agents aux plateformes", "numerique": "Services numériques accessibles à toutes les plateformes du Ministère"}, {"id": "8e3e5d02-9790-5d37-874c-c99b0d64c4bb", "partenaires": ["26fedf4b-4359-5152-a4f3-e8e57536e20b"], "activite": "E-Santé Libre (URL Free)", "task": "Soutenir la mise en œuvre de l’URL free et analyser la possibilité d'utiliser le service APN", "due": null, "status": "In Progress", "direction": "DSI", "pilier": "Information sanitaire", "snsc": "Indirect : accès des agents aux plateformes", "numerique": "Services numériques accessibles à toutes les plateformes du Ministère"}, {"id": "bbfba261-bb2d-5a01-ae19-117590697344", "partenaires": ["26fedf4b-4359-5152-a4f3-e8e57536e20b"], "activite": "EDM", "task": "Appui à l'identification des cas d'usage pour le dashboard sur Superset", "due": null, "status": "In Progress", "direction": "DSI", "pilier": "Information sanitaire", "snsc": "Indirect : usage des données de routine", "numerique": "Cas d'usage de tableaux de bord (Superset)"}, {"id": "affb5d2a-9e92-51e0-9628-66b637fa5e22", "partenaires": ["26fedf4b-4359-5152-a4f3-e8e57536e20b"], "activite": "RMET (cartographie des ressources)", "task": "Mettre à jour le tableau de bord avec les données issues de l'exercice de cartographie de 2026.", "due": null, "status": "Not Started", "direction": "ST RFS", "pilier": "Financement", "snsc": "Indirect : cartographie des ressources disponibles", "numerique": "Tableau de bord de suivi des ressources"}, {"id": "104e7abd-7df9-5645-97b3-849dc9461b22", "partenaires": ["26fedf4b-4359-5152-a4f3-e8e57536e20b", "8d788493-6430-5cfd-9c18-3fb8f08946fb"], "activite": "PGA (gestion des ASBC)", "task": "Injecter les données de la liste finalisée (ASBC + VN ASBC) dans le PGA et interopérabilité eSantéCom et la PGA", "due": null, "status": "In Progress", "direction": "DSI/DSC", "pilier": "Prestations de services", "snsc": "Numérisation des prestations de santé communautaire ; gestion des ASBC", "numerique": "Santé numérique communautaire (application eSantéCom, PGA)"}, {"id": "9d7d58e5-461d-510f-a40f-cf984fce3000", "partenaires": ["26fedf4b-4359-5152-a4f3-e8e57536e20b"], "activite": "CPS et MILDA", "task": "Appui technique aux campagnes CPS et MILDA.", "due": null, "status": "In Progress", "direction": "SP/Palu, DSI", "pilier": "Prestations de services", "snsc": "Distribution et prévention à base communautaire (CPS, MILDA)", "numerique": "Pilotage de la lutte antipaludique par les données (ReDoP)"}, {"id": "9a9be9da-38a4-5778-b518-b62ee180dfa0", "partenaires": ["26fedf4b-4359-5152-a4f3-e8e57536e20b"], "activite": "ReDoP", "task": "Finaliser le module climatique", "due": null, "status": "In Progress", "direction": "SP/Palu, DSI", "pilier": "Prestations de services", "snsc": "Distribution et prévention à base communautaire (CPS, MILDA)", "numerique": "Pilotage de la lutte antipaludique par les données (ReDoP)"}, {"id": "9afdb459-c541-5fba-8337-9ee1ad590257", "partenaires": ["26fedf4b-4359-5152-a4f3-e8e57536e20b"], "activite": "NetSIGL", "task": "Appui pour l'amélioration de la plateforme", "due": null, "status": "In Progress", "direction": "DSI/DCAPS", "pilier": "Produits de santé", "snsc": "Approvisionnement des formations sanitaires et des points de distribution", "numerique": "Système d'information de gestion logistique (NetSIGL) et assistance aux utilisateurs"}, {"id": "cc92009b-6517-5c60-ad18-82ae9dc16d9a", "partenaires": ["6b75d8c1-2db7-503b-b050-e951704ec28c"], "activite": "NetSIGL", "task": "Apporter un appui pour l’assistance aux utilisateurs (Helpdesk)", "due": null, "status": "In Progress", "direction": "DSI/DCAPS", "pilier": "Produits de santé", "snsc": "Approvisionnement des formations sanitaires et des points de distribution", "numerique": "Système d'information de gestion logistique (NetSIGL) et assistance aux utilisateurs"}, {"id": "7c0eb27d-ab68-5344-8db6-f09bd402cf82", "partenaires": ["6b75d8c1-2db7-503b-b050-e951704ec28c"], "activite": "NetSIGL", "task": "Doter les utilisateurs et équipes techniques (Helpdesk et Groupe Technique de Travail) en crédits mensuels de communication/internet", "due": null, "status": "In Progress", "direction": "DSI/DCAPS", "pilier": "Produits de santé", "snsc": "Approvisionnement des formations sanitaires et des points de distribution", "numerique": "Système d'information de gestion logistique (NetSIGL) et assistance aux utilisateurs"}, {"id": "1431d8d9-1a1f-561a-9649-cdda2f9006c9", "partenaires": ["b63c8fa6-7ce2-56b3-9f5b-a7f81c8307fc", "28261bd7-73c3-5f9f-9796-4f8d4586d45d"], "activite": "eSantéCom", "task": "Soutenir l'expansion de la numérisation des soins de santé communautaires, en particulier l'utilisation de l'application esanteCom", "due": null, "status": "En attente", "direction": "DSC, DSI", "pilier": "Prestations de services", "snsc": "Numérisation des prestations de santé communautaire ; gestion des ASBC", "numerique": "Santé numérique communautaire (application eSantéCom, PGA)"}, {"id": "45ac8cdd-c561-5ba9-9036-8d5c1083095a", "partenaires": ["b63c8fa6-7ce2-56b3-9f5b-a7f81c8307fc", "28261bd7-73c3-5f9f-9796-4f8d4586d45d"], "activite": "SNIS", "task": "Effectuer des examens trimestriels de la qualité des données courantes et de leur validation dans les regions dinterventions", "due": null, "status": "En attente", "direction": "(non précisé)", "pilier": "Information sanitaire", "snsc": "Validation des données communautaires dans les zones d'intervention", "numerique": "Qualité des données du SNIS (examens trimestriels)"}, {"id": "6e963b01-ea4b-55be-9aa2-de585c70c469", "partenaires": ["b63c8fa6-7ce2-56b3-9f5b-a7f81c8307fc"], "activite": "SNIS", "task": "Renforcer mise a jour de STELAB et utilsisation dans les centre de sante", "due": null, "status": "En attente", "direction": "DSI, DPSP", "pilier": "Information sanitaire", "snsc": "Remontée des données de surveillance depuis la base", "numerique": "Notification électronique de la surveillance (TLOH Mobile, STELAB)"}, {"id": "2d50afac-2a27-5ead-9396-6c6f69e54b2a", "partenaires": ["8d788493-6430-5cfd-9c18-3fb8f08946fb"], "activite": "eSantéCom", "task": "MIse à jour de la feuille de route triennal et plan d'action annuel", "due": null, "status": "Not Started", "direction": "DSC, DSI", "pilier": "Gouvernance", "snsc": "Planification de la numérisation de la santé communautaire", "numerique": "Gouvernance de la santé numérique et du SNIS (plan stratégique, instances)"}, {"id": "9162ccd7-3f4b-5892-893b-467f57a35aee", "partenaires": ["8d788493-6430-5cfd-9c18-3fb8f08946fb"], "activite": "eSantéCom", "task": "Deploiement des applications", "due": null, "status": "Not Started", "direction": "DSC, DSI", "pilier": "Prestations de services", "snsc": "Numérisation des prestations de santé communautaire ; gestion des ASBC", "numerique": "Santé numérique communautaire (application eSantéCom, PGA)"}, {"id": "3499f6c0-b9c9-5869-974c-7bdfb75ba165", "partenaires": ["8d788493-6430-5cfd-9c18-3fb8f08946fb"], "activite": "eSantéCom", "task": "Comite eSanté", "due": null, "status": "Not Started", "direction": "DSC, DSI", "pilier": "Gouvernance", "snsc": "Coordination des interventions de santé à base communautaire", "numerique": "Gouvernance de la e-santé communautaire (comité eSanté)"}, {"id": "3f34ab2a-338d-5a7f-b0bc-9ab0d6ce7e6e", "partenaires": ["8d788493-6430-5cfd-9c18-3fb8f08946fb"], "activite": "eSantéCom", "task": "Revue des données de la santé communautaire", "due": null, "status": "Not Started", "direction": "DSC, DSI", "pilier": "Information sanitaire", "snsc": "Exploitation des données communautaires (tableaux de bord, revues de données)", "numerique": "Valorisation des données : visualisation et analyse (Superset, CIS)"}, {"id": "d023a9f6-8346-5b62-ba0e-e18e9fe9d6b7", "partenaires": ["8d788493-6430-5cfd-9c18-3fb8f08946fb"], "activite": "eSantéCom", "task": "Developpement des tableau de bords esantecom", "due": null, "status": "In Progress", "direction": "DSC, DSI", "pilier": "Information sanitaire", "snsc": "Exploitation des données communautaires (tableaux de bord, revues de données)", "numerique": "Valorisation des données : visualisation et analyse (Superset, CIS)"}, {"id": "9ed14f4c-bab9-5f02-99f8-7c060e2748f1", "partenaires": ["8d788493-6430-5cfd-9c18-3fb8f08946fb"], "activite": "eSantéCom", "task": "Mise à jour des tableaux de bords eSantecom", "due": null, "status": "Not Started", "direction": "DSC, DSI", "pilier": "Information sanitaire", "snsc": "Exploitation des données communautaires (tableaux de bord, revues de données)", "numerique": "Valorisation des données : visualisation et analyse (Superset, CIS)"}, {"id": "1fbeca1b-362a-54b6-8275-1793007cd601", "partenaires": ["8d788493-6430-5cfd-9c18-3fb8f08946fb"], "activite": "eSantéCom", "task": "Supervision Semestrielle eSantecom", "due": null, "status": "Not Started", "direction": "DSC, DSI", "pilier": "Prestations de services", "snsc": "Supervision de la qualité des services des ASBC", "numerique": "Santé numérique communautaire (application eSantéCom, PGA)"}, {"id": "2cbe5986-0486-5ea1-938f-d69c277b77e0", "partenaires": ["8d788493-6430-5cfd-9c18-3fb8f08946fb"], "activite": "eSantéCom", "task": "Cahier de charges pour le developpement de l'application elearning des ASBC", "due": null, "status": "Not Started", "direction": "DSC, DSI", "pilier": "Ressources humaines", "snsc": "Renforcement des compétences des ASBC (formation continue)", "numerique": "Application e-learning pour les ASBC"}], "notes": [], "produits": []};
+const CFG = window.APP_CONFIG || {};
+const STATUTS = ["Not Started","In Progress","Complete","En attente","Cancel"];
+const PILIERS = ["Gouvernance","Information sanitaire","Ressources humaines","Financement","Produits de santé","Prestations de services"];
+const LS = "snis-partenaires-v1";
+const PAL = [["#B5172A","#fff"],["#0B6E8E","#fff"],["#1F3C88","#fff"],["#2E7D5B","#fff"],["#7A3E8E","#fff"],["#C46A10","#fff"],["#00577A","#fff"],["#5A6B2E","#fff"]];
+
+let db = {partenaires:[], taches:[], notes:[], produits:[]};
+let sb = null, session = null;
+let q = "";
+let selTask = null;
+let cal = {mode:"month", d:new Date()};
+let formState = null;
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ic = (n, cls="i") => `<svg class="${cls}"><use href="#${n}"/></svg>`;
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : "x" + Date.now().toString(36) + Math.random().toString(36).slice(2));
+const fmtD = d => { if (!d) return ""; const [y,m,j] = d.split("-"); return `${+j}/${+m}/${y}`; };
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const P = id => db.partenaires.find(p => p.id === id);
+const T = id => db.taches.find(t => t.id === id);
+const pNames = t => (t.partenaires || []).map(id => P(id)?.nom).filter(Boolean).join(", ");
+const match = (...s) => !q || s.join(" ").toLowerCase().includes(q.toLowerCase());
+function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("on"); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove("on"),2600); }
+function mono(nom){ let h=0; for(const c of nom) h=(h*31+c.charCodeAt(0))>>>0; const [bg,fg]=PAL[h%PAL.length]; return {bg,fg,txt:nom.length<=12?nom:nom.split(/\s+/).map(w=>w[0]).join("").slice(0,4).toUpperCase()}; }
+
+/* ================= Données : local ou Supabase ================= */
+const Store = {
+  async init(){
+    if (CFG.SUPABASE_URL && CFG.SUPABASE_ANON_KEY) {
+      await new Promise((ok, ko) => { const s=document.createElement("script"); s.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"; s.onload=ok; s.onerror=ko; document.head.appendChild(s); });
+      sb = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY);
+      const { data } = await sb.auth.getSession(); session = data.session;
+      sb.auth.onAuthStateChange((_e, s) => { const was = !!session; session = s; if (!!s !== was) boot(); });
+    }
+  },
+  async load(){
+    if (sb) {
+      const out = {};
+      for (const t of ["partenaires","taches","notes","produits"]) {
+        const { data, error } = await sb.from(t).select("*");
+        if (error) throw error; out[t] = data;
+      }
+      db = out;
+    } else {
+      try { const s = JSON.parse(localStorage.getItem(LS) || "null"); db = s && s.partenaires ? s : structuredClone(SEED); } catch(e) { db = structuredClone(SEED); }
+    }
+    db.partenaires.sort((a,b) => a.nom.localeCompare(b.nom, "fr"));
+  },
+  async save(table, row){
+    const i = db[table].findIndex(r => r.id === row.id);
+    if (i >= 0) db[table][i] = row; else db[table].push(row);
+    if (sb) { const { error } = await sb.from(table).upsert(row); if (error) { toast("Échec de l'enregistrement : " + error.message); throw error; } }
+    else this.persistLocal();
+  },
+  async remove(table, id){
+    db[table] = db[table].filter(r => r.id !== id);
+    if (sb) { const { error } = await sb.from(table).delete().eq("id", id); if (error) { toast("Échec de la suppression : " + error.message); throw error; } }
+    else this.persistLocal();
+  },
+  persistLocal(){ try { localStorage.setItem(LS, JSON.stringify(db)); } catch(e) { toast("Stockage du navigateur plein : retirez des fichiers volumineux."); } },
+  async upload(file){
+    if (sb) {
+      const path = `${uid()}-${file.name.replace(/[^\w.\-]/g,"_")}`;
+      const { error } = await sb.storage.from("fichiers").upload(path, file);
+      if (error) { toast("Échec de l'envoi : " + error.message); throw error; }
+      return sb.storage.from("fichiers").getPublicUrl(path).data.publicUrl;
+    }
+    if (file.size > 1.5*1024*1024) { toast("En mode local, choisissez un fichier de moins de 1,5 Mo."); throw new Error("size"); }
+    return await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(file); });
+  }
+};
+
+/* ================= Habillage (barre haut, FAB, barre bas) ================= */
+function chrome({title, back=false, acts=[], fabs=[], nav=null, form=false}){
+  $("#title").textContent = title;
+  $("#lead").innerHTML = back ? `<button class="ib" data-act="back" aria-label="Retour">${ic("i-back")}</button>` : `<button class="ib" data-act="menu" aria-label="Menu">${ic("i-menu")}</button>`;
+  const A = {search:["i-search","Rechercher"], refresh:["i-refresh","Actualiser"], grid:["i-grid","Changer d'affichage"], check:["i-check","Vue Kanban"], trash:["i-trash","Supprimer"], dots:["i-dots","Plus d'actions"]};
+  $("#acts").innerHTML = acts.map(a => `<button class="ib" data-act="${a}" aria-label="${A[a][1]}">${ic(A[a][0])}</button>`).join("");
+  $("#fabs").innerHTML = fabs.map(f => `<button class="fab" data-fab="${f.k}" aria-label="${esc(f.label)}">${ic(f.icon)}</button>`).join("");
+  $("#bottom").hidden = form; $("#formbar").hidden = !form;
+  document.querySelectorAll("#bottom a").forEach(a => a.classList.toggle("on", a.dataset.nav === nav));
+}
+
+/* ================= Vues ================= */
+const views = {};
+
+views.partenaires = () => {
+  chrome({title:"Partenaires SNIS", acts:["search","refresh"], fabs:[{k:"newP", icon:"i-plus", label:"Nouveau partenaire"}]});
+  const list = db.partenaires.filter(p => match(p.nom, p.contacts, p.email));
+  $("#main").innerHTML = list.length ? `<div class="pgrid">` + list.map(p => {
+    const m = mono(p.nom);
+    return `<button class="ptile" data-go="#/partenaire/${p.id}">${p.photo ? `<img src="${esc(p.photo)}" alt="">` : `<span class="mono" style="color:${m.bg};font-size:min(4.2rem, ${(86/(Math.max(...m.txt.split(/\s+/).map(w=>w.length))*0.62)).toFixed(1)}cqw)">${esc(m.txt)}</span>`}<span class="nm">${esc(p.nom)}</span></button>`;
+  }).join("") + `</div>` : `<div class="empty">No items</div>`;
+};
+
+function barChart(tasks){
+  const counts = STATUTS.map(s => tasks.filter(t => t.status === s).length);
+  const max = Math.max(5, Math.ceil(Math.max(...counts) / 5) * 5);
+  const W = 860, H = 280, L = 50, B = 50, top = 30, cw = (W - L - 40) / STATUTS.length;
+  let g = `<text x="${L-14}" y="14" font-size="12" fill="#555">Count</text>`;
+  for (let v = 0; v <= max; v += max/5) { const y = top + (H-top-B) * (1 - v/max); g += `<line x1="${L}" x2="${W-30}" y1="${y}" y2="${y}" stroke="#E3E3E3"/><text x="${L-10}" y="${y+4}" font-size="12" text-anchor="end" fill="#555">${v}</text>`; }
+  counts.forEach((c,i) => { const x = L + i*cw + cw*0.15, h = (H-top-B) * c/max; g += `<rect x="${x}" y="${H-B-h}" width="${cw*0.7}" height="${h}" fill="#00CEC0"><title>${STATUTS[i]} : ${c}</title></rect><text transform="translate(${L+i*cw+cw/2},${H-B+16}) rotate(-35)" font-size="12" text-anchor="end" fill="#555">${STATUTS[i]}</text>`; });
+  g += `<line x1="${L}" x2="${W-30}" y1="${H-B}" y2="${H-B}" stroke="#999"/><text transform="translate(${W-12},${H-B}) rotate(-90)" font-size="11" fill="#555">Status</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Nombre de tâches par statut">${g}</svg>`;
+}
+function relTasks(tasks){
+  return `<div class="rel">` + tasks.map(t => `<button data-go="#/tache/${t.id}"><span><div class="t">${esc(t.task)}</div><div class="s">${esc(t.activite)} · ${esc(t.status)}${t.due ? " · " + fmtD(t.due) : ""}</div></span>${ic("i-chev")}</button>`).join("") + `</div>`;
+}
+
+views.partenaire = (id) => {
+  const p = P(id); if (!p) return go("#/partenaires");
+  chrome({title:"Details", back:true, acts:["trash","dots","refresh"], fabs:[{k:"editP", icon:"i-editbox", label:"Modifier"}]});
+  const tasks = db.taches.filter(t => (t.partenaires||[]).includes(id));
+  const i = db.partenaires.indexOf(p), prev = db.partenaires[i-1], next = db.partenaires[i+1];
+  const m = mono(p.nom);
+  $("#main").innerHTML = `<div class="detail">
+    <div class="fld"><div class="lb">Nom</div><div class="vl">${esc(p.nom)}</div></div>
+    <div class="fld"><div class="lb">Email</div><div class="row"><div class="vl">${esc(p.email || "—")}</div>${p.email ? `<a class="mail" href="mailto:${esc(p.email)}" aria-label="Écrire">${ic("i-mail")}</a>` : ""}</div></div>
+    <div class="fld"><div class="lb">Personnes à contacter</div><div class="vl">${esc(p.contacts || "—")}</div></div>
+    <div class="fld"><div class="lb">Photo</div></div>
+    <div class="photo">${p.photo ? `<img src="${esc(p.photo)}" alt="Logo ${esc(p.nom)}">` : `<span class="mono" style="color:${m.bg}">${esc(m.txt)}</span>`}</div>
+    ${prev ? `<button class="navarr l" data-go="#/partenaire/${prev.id}" aria-label="Partenaire précédent">${ic("i-left")}</button>` : ""}
+    ${next ? `<button class="navarr r" data-go="#/partenaire/${next.id}" aria-label="Partenaire suivant">${ic("i-right")}</button>` : ""}
+    <div class="sep"></div>
+    <div class="relhead">Tasks <span class="badge">${tasks.length}</span></div>
+    <div class="chart">${barChart(tasks)}</div>
+    ${relTasks(tasks)}
+  </div>`;
+};
+
+function taskDetailHtml(t, inPanel){
+  const notes = db.notes.filter(n => n.tache_id === t.id).sort((a,b) => (b.created_at||"").localeCompare(a.created_at||""));
+  const key = t.status.replace(/\s/g,"");
+  const f = (lb, v) => v ? `<div class="fld"><div class="lb">${lb}</div><div class="vl" style="font-size:1.1rem">${esc(v)}</div></div>` : "";
+  return `<div class="stat-icon"><span>${ic("s-"+key)}</span>${esc(t.status).toUpperCase()}</div>
+    <div class="fld"><div class="lb">Task</div><div class="vl">${esc(t.task)}</div></div>
+    <div class="fld"><div class="lb">Due</div><input class="datein" type="date" data-due="${t.id}" value="${esc(t.due||"")}"></div>
+    <div class="fld"><div class="lb">Status Label</div><div class="vl">${esc(t.status)}</div></div>
+    ${f("Partenaire(s)", pNames(t))}${f("Activité", t.activite)}${f("Direction", t.direction)}${f("Pilier PNDS", t.pilier)}${f("Lien santé communautaire (SNSC)", t.snsc)}${f("Lien santé numérique", t.numerique)}
+    <div class="sep"></div>
+    <div class="relhead">Notes <span class="badge">${notes.length}</span></div>
+    ${notes.map(n => `<div class="note">${ic("i-note")}<div><div class="d">${esc(new Date(n.created_at).toLocaleString("fr-FR"))}</div><div class="x">${esc(n.texte)}</div></div></div>`).join("")}
+    ${inPanel ? `<div class="ifabs"><button class="fab" data-fab="note" data-id="${t.id}" aria-label="Ajouter une note">${ic("i-chat")}</button><button class="fab" data-fab="editT" data-id="${t.id}" aria-label="Modifier">${ic("i-edit")}</button></div>` : ""}`;
+}
+
+views.tache = (id) => {
+  if (id === "new") return views.tacheForm(null);
+  const t = T(id); if (!t) return go("#/tracker");
+  selTask = id;
+  chrome({title:"Tracker Detail", back:true, acts:["trash","refresh"], fabs:[{k:"note", icon:"i-chat", label:"Ajouter une note"}, {k:"editT", icon:"i-edit", label:"Modifier"}]});
+  $("#main").innerHTML = `<div class="detail">${taskDetailHtml(t, false)}</div>`;
+};
+
+views.tracker = () => {
+  chrome({title:"Tracker", acts:["search","grid","refresh"], nav:"tracker"});
+  const tasks = db.taches.filter(t => match(t.task, t.activite, pNames(t)));
+  const sel = selTask && T(selTask);
+  $("#main").innerHTML = `<div class="kanban">` + STATUTS.map(s => {
+    const its = tasks.filter(t => t.status === s);
+    return `<section class="kcol"><h2>${esc(s)} <small>${its.length || ""}</small></h2><div class="klist">${its.length ? its.map(t => `
+      <div class="kcard ${sel && sel.id===t.id?"sel":""}" data-sel="${t.id}"><div style="flex:1"><div class="t">${esc(t.task)}</div><div class="p">${esc(pNames(t) || t.activite)}</div></div><button class="more" data-more="${t.id}" aria-label="Actions">${ic("i-dots")}</button></div>`).join("") : `<div class="empty">No items</div>`}</div></section>`;
+  }).join("") + `<section class="kdetail"><h2 style="font-size:1.15rem;font-weight:600;margin:0;padding:12px 18px;border-bottom:1px solid var(--line)">Tracker Detail</h2><div class="body">${sel ? taskDetailHtml(sel, true) : `<div class="empty">Sélectionnez une tâche</div>`}</div></section></div>`;
+};
+
+views["tracker-inline"] = () => {
+  chrome({title:"Tracker Inline", back:true, acts:["search","check","refresh"], nav:"tracker"});
+  const tasks = db.taches.filter(t => match(t.task, t.activite, pNames(t)));
+  $("#main").innerHTML = `<div style="overflow:auto;height:100%"><table class="inline"><colgroup><col style="width:42%"><col style="width:44%"><col style="width:10%"><col style="width:4%"></colgroup>
+    <thead><tr><th>Activité</th><th>Task</th><th>Due</th><th></th></tr></thead><tbody>` +
+    STATUTS.map(s => { const its = tasks.filter(t => t.status === s); return its.length ? `<tr class="grp"><td colspan="4">${esc(s)}</td></tr>` + its.map(t => `<tr class="it" data-go="#/tache/${t.id}"><td title="${esc(t.activite)}">${esc(t.activite)}</td><td title="${esc(t.task)}">${esc(t.task)}</td><td>${fmtD(t.due)}</td><td>${ic("i-chev")}</td></tr>`).join("") : ""; }).join("") +
+    `</tbody></table></div>`;
+};
+
+views.calendar = () => {
+  chrome({title:"Calendar", acts:["search","grid","refresh"], nav:"calendar"});
+  const tasks = db.taches.filter(t => match(t.task, t.activite, pNames(t)));
+  const dated = tasks.filter(t => t.due).sort((a,b) => a.due.localeCompare(b.due));
+  let up = "", last = "";
+  for (const t of dated) { if (t.due !== last) { up += `<div class="update">${fmtD(t.due)}</div>`; last = t.due; }
+    up += `<div class="upit" data-go="#/tache/${t.id}"><div class="r1"><span>${esc(t.task)}</span><small>${esc(t.status)}</small></div><div class="p">${esc(pNames(t))}</div><div class="c">${ic("i-chat")}</div></div>`; }
+  if (!up) up = `<div class="empty" style="padding:20px;text-align:center">Aucune tâche datée.<br>Renseignez le champ Due d'une tâche.</div>`;
+  const d = cal.d, todayIso = iso(new Date());
+  const byDay = {}; for (const t of dated) (byDay[t.due] ||= []).push(t);
+  const evts = day => (byDay[day]||[]).map(t => `<button class="evt" data-go="#/tache/${t.id}" title="${esc(t.task)}">${esc(t.task)}</button>`).join("");
+  const days = ["lu","ma","me","je","ve","sa","di"];
+  let body = "", label = "";
+  if (cal.mode === "month") {
+    label = d.toLocaleDateString("fr-FR", {month:"long", year:"numeric"});
+    const first = new Date(d.getFullYear(), d.getMonth(), 1), off = (first.getDay()+6)%7, n = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate();
+    body = `<div class="month">` + days.map(x => `<div class="dh">${x}</div>`).join("");
+    const cells = Math.ceil((off+n)/7)*7;
+    for (let i = 0; i < cells; i++) { const day = i - off + 1;
+      if (day < 1 || day > n) { body += `<div class="dc out"></div>`; continue; }
+      const k = iso(new Date(d.getFullYear(), d.getMonth(), day));
+      body += `<div class="dc"><span class="num ${k===todayIso?"today":""}">${String(day).padStart(2,"0")}</span>${evts(k)}</div>`; }
+    body += `</div>`;
+  } else if (cal.mode === "week") {
+    const mon = new Date(d); mon.setDate(d.getDate() - (d.getDay()+6)%7);
+    label = "Semaine du " + mon.toLocaleDateString("fr-FR", {day:"numeric", month:"long", year:"numeric"});
+    body = `<div class="month">` + days.map((x,i) => { const dd = new Date(mon); dd.setDate(mon.getDate()+i); return `<div class="dh">${x} ${dd.getDate()}</div>`; }).join("");
+    for (let i = 0; i < 7; i++) { const dd = new Date(mon); dd.setDate(mon.getDate()+i); const k = iso(dd); body += `<div class="dc" style="min-height:300px">${k===todayIso?`<span class="num today">${dd.getDate()}</span>`:""}${evts(k)}</div>`; }
+    body += `</div>`;
+  } else {
+    label = d.toLocaleDateString("fr-FR", {weekday:"long", day:"numeric", month:"long", year:"numeric"});
+    const its = byDay[iso(d)] || [];
+    body = `<div class="daylist">${its.length ? its.map(t => `<div class="upit" data-go="#/tache/${t.id}"><div class="r1"><span>${esc(t.task)}</span><small>${esc(t.status)}</small></div><div class="p">${esc(pNames(t))}</div></div>`).join("") : `<div class="empty">No items</div>`}</div>`;
+  }
+  $("#main").innerHTML = `<div class="cal"><section class="panel"><h2>Upcoming</h2><div class="uplist">${up}</div></section>
+    <section class="panel"><h2>${cal.mode==="month"?"Month":cal.mode==="week"?"Week":"Day"}</h2>
+    <div class="calmodes"><div class="m">${["day","week","month"].map(m => `<button data-cmode="${m}" class="${cal.mode===m?"on":""}">${m==="day"?"Day":m==="week"?"Week":"Month"}</button>`).join("")}</div><button class="today" data-cnav="0">TODAY</button></div>
+    <div class="calnav"><button data-cnav="-1" aria-label="Précédent">${ic("i-left")}</button><span>${esc(label)}</span><button data-cnav="1" aria-label="Suivant">${ic("i-right")}</button></div>
+    ${body}</section></div>`;
+};
+
+views.produits = () => {
+  chrome({title:"Liste des produits", acts:["search","refresh"], nav:"produits", fabs:[{k:"newProd", icon:"i-plus", label:"Nouveau produit"}]});
+  const list = db.produits.filter(pr => { const t = T(pr.tache_id); return match(pr.nom, t?.task, t ? pNames(t) : ""); });
+  $("#main").innerHTML = `<div class="list">${list.length ? list.map(pr => { const t = T(pr.tache_id);
+    return `<a class="it" href="${esc(pr.url)}" target="_blank" rel="noopener" download="${esc(pr.nom)}">${ic("i-pdf")}<span style="flex:1"><div class="t">${esc(pr.nom)}</div><div class="s">${esc(t ? t.task : "Tâche supprimée")}${t ? " · " + esc(pNames(t)) : ""}</div></span><button class="kcard more" data-delprod="${pr.id}" aria-label="Supprimer">${ic("i-trash")}</button></a>`; }).join("") : `<div class="empty">No items</div>`}</div>`;
+};
+
+views.workstreams = () => {
+  chrome({title:"Workstreams", back:true, acts:["search","refresh"]});
+  const groups = {};
+  for (const t of db.taches.filter(t => match(t.task, t.activite, pNames(t)))) (groups[t.activite] ||= []).push(t);
+  $("#main").innerHTML = `<div class="list">` + Object.keys(groups).sort((a,b)=>a.localeCompare(b,"fr")).map(g => `<h3>${esc(g)} <span class="badge">${groups[g].length}</span></h3>` + groups[g].map(t => `<button class="it" data-go="#/tache/${t.id}"><span style="flex:1"><div class="t">${esc(t.task)}</div><div class="s">${esc(t.status)} · ${esc(pNames(t))}</div></span>${ic("i-chev")}</button>`).join("")).join("") + `</div>`;
+};
+
+views.about = () => {
+  chrome({title:"About", back:true});
+  $("#main").innerHTML = `<div class="detail" style="padding:20px"><div class="fld"><div class="lb">Application</div><div class="vl">${esc(CFG.APP_NAME || "Plan des partenaires SNIS")}</div></div>
+  <div class="fld"><div class="lb">Contenu</div><div class="vl" style="font-size:1.05rem">${db.partenaires.length} partenaires, ${db.taches.length} tâches, ${db.notes.length} notes, ${db.produits.length} produits.</div></div>
+  <div class="fld"><div class="lb">Enregistrement</div><div class="vl" style="font-size:1.05rem">${sb ? "Base partagée Supabase" : "Local : les données restent dans ce navigateur. Configurez Supabase pour les partager (voir README)."}</div></div>
+  <div class="fld"><div class="lb">Références</div><div class="vl" style="font-size:1.05rem">PNDS 2021-2030 · SNSC 2024-2028 · Plan stratégique SNIS 2026-2030</div></div>
+  ${sb ? "" : `<div class="fld" style="padding-top:20px"><button class="btnp" style="width:auto;background:#fff;color:var(--danger);border:1px solid var(--danger)" data-act="reset">Réinitialiser les données locales</button></div>`}</div>`;
+};
+
+/* ================= Formulaires ================= */
+function formRow(label, html, req){ return `<div class="frow"><label>${esc(label)}${req?` <span class="req">*</span>`:""}</label><div>${html}</div></div>`; }
+function openForm(title, html, onSave, back){
+  chrome({title, back:true, form:true});
+  formState = {onSave, back};
+  $("#main").innerHTML = `<form class="form" id="frm" onsubmit="return false">${html}</form>`;
+}
+
+views.tacheForm = (id) => {
+  const t = id ? T(id) : {id:uid(), partenaires:[], activite:"", task:"", due:"", status:"Not Started", direction:"", pilier:"", snsc:"", numerique:""};
+  const dl = (n, arr) => `<datalist id="${n}">${[...new Set(arr.filter(Boolean))].sort().map(v => `<option value="${esc(v)}">`).join("")}</datalist>`;
+  openForm(id ? "Modifier la tâche" : "Nouvelle activité",
+    formRow("Partenaires", `<div class="checks">${db.partenaires.map(p => `<label><input type="checkbox" name="pt" value="${p.id}" ${t.partenaires.includes(p.id)?"checked":""}> ${esc(p.nom)}</label>`).join("")}</div>`, true) +
+    formRow("Activité", `<input name="activite" list="dlA" value="${esc(t.activite)}" required>${dl("dlA", db.taches.map(x=>x.activite))}`, true) +
+    formRow("Task", `<textarea name="task" required>${esc(t.task)}</textarea>`, true) +
+    formRow("Due", `<input type="date" name="due" value="${esc(t.due||"")}">`) +
+    formRow("Status", `<select name="status">${STATUTS.map(s => `<option ${s===t.status?"selected":""}>${s}</option>`).join("")}</select>`) +
+    formRow("Direction", `<input name="direction" list="dlD" value="${esc(t.direction)}">${dl("dlD", db.taches.map(x=>x.direction))}`) +
+    formRow("Pilier PNDS", `<select name="pilier"><option value="">À rattacher</option>${PILIERS.map(p => `<option ${p===t.pilier?"selected":""}>${p}</option>`).join("")}</select>`) +
+    formRow("Lien santé communautaire (SNSC)", `<input name="snsc" list="dlS" value="${esc(t.snsc)}">${dl("dlS", db.taches.map(x=>x.snsc))}`) +
+    formRow("Lien santé numérique", `<input name="numerique" list="dlN" value="${esc(t.numerique)}">${dl("dlN", db.taches.map(x=>x.numerique))}`),
+    async f => {
+      const pts = [...f.querySelectorAll("input[name=pt]:checked")].map(x => x.value);
+      if (!pts.length) return toast("Choisissez au moins un partenaire.");
+      if (!f.activite.value.trim() || !f.task.value.trim()) return toast("Renseignez l'activité et la tâche.");
+      await Store.save("taches", {...t, partenaires:pts, activite:f.activite.value.trim(), task:f.task.value.trim(), due:f.due.value||null, status:f.status.value, direction:f.direction.value.trim(), pilier:f.pilier.value, snsc:f.snsc.value.trim(), numerique:f.numerique.value.trim()});
+      selTask = t.id; toast(id ? "Tâche mise à jour" : "Activité ajoutée"); go("#/tache/" + t.id, true);
+    }, id ? "#/tache/" + id : "#/tracker");
+};
+
+views.partenaireForm = (id) => {
+  const p = id ? P(id) : {id:uid(), nom:"", email:"", contacts:"", photo:""};
+  let photo = p.photo;
+  openForm(id ? "Modifier le partenaire" : "Nouveau partenaire",
+    formRow("Nom", `<input name="nom" value="${esc(p.nom)}" required>`, true) +
+    formRow("Email", `<input type="email" name="email" value="${esc(p.email)}">`) +
+    formRow("Personnes à contacter", `<input name="contacts" value="${esc(p.contacts)}">`) +
+    formRow("Photo", `<div class="filebox" id="photoBox">${photo ? `<img src="${esc(photo)}" alt="">` : "Touchez pour choisir le logo"}</div><input name="photoUrl" placeholder="…ou collez l'adresse (URL) d'une image" style="margin-top:10px" value="${photo && !photo.startsWith("data:") ? esc(photo) : ""}">`),
+    async f => {
+      if (!f.nom.value.trim()) return toast("Renseignez le nom du partenaire.");
+      const url = f.photoUrl.value.trim(); if (url) photo = url;
+      await Store.save("partenaires", {...p, nom:f.nom.value.trim(), email:f.email.value.trim(), contacts:f.contacts.value.trim(), photo});
+      db.partenaires.sort((a,b) => a.nom.localeCompare(b.nom, "fr"));
+      toast(id ? "Partenaire mis à jour" : "Partenaire ajouté"); go("#/partenaire/" + p.id, true);
+    }, id ? "#/partenaire/" + id : "#/partenaires");
+  $("#photoBox").onclick = () => pickFile("image/*", async file => { photo = await Store.upload(file); $("#photoBox").innerHTML = `<img src="${esc(photo)}" alt="">`; $("#frm").photoUrl.value = ""; });
+};
+
+views.produitForm = () => {
+  let file = null;
+  openForm("Produits",
+    formRow("Task", `<select name="tache"><option value=""></option>${db.taches.map(t => `<option value="${t.id}" ${t.id===selTask?"selected":""}>${esc(t.task.slice(0,110))}</option>`).join("")}</select>`, true) +
+    formRow("fichier", `<div class="filebox" id="fileBox">${ic("i-pdf")}</div>`, true),
+    async f => {
+      if (!f.tache.value) return toast("Choisissez la tâche concernée.");
+      if (!file) return toast("Ajoutez le fichier.");
+      const url = await Store.upload(file);
+      await Store.save("produits", {id:uid(), tache_id:f.tache.value, nom:file.name, url});
+      toast("Produit enregistré"); go("#/produits", true);
+    }, "#/produits");
+  $("#fileBox").onclick = () => pickFile(".pdf,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,image/*", fl => { file = fl; $("#fileBox").innerHTML = `${ic("i-pdf")}<div>${esc(fl.name)}</div>`; });
+};
+
+function noteForm(tid){
+  openForm("Nouvelle note", formRow("Note", `<textarea name="texte" required></textarea>`, true), async f => {
+    if (!f.texte.value.trim()) return toast("Écrivez la note.");
+    await Store.save("notes", {id:uid(), tache_id:tid, texte:f.texte.value.trim(), created_at:new Date().toISOString()});
+    toast("Note ajoutée"); history.back();
+  }, null);
+}
+
+function pickFile(accept, cb){ const fp = $("#filePick"); fp.accept = accept; fp.value = ""; fp.onchange = () => { if (fp.files[0]) Promise.resolve().then(() => cb(fp.files[0])).catch(() => {}); }; fp.click(); }
+
+/* ================= Menus, confirmations ================= */
+function sheet(title, items){
+  $("#sheetBox").innerHTML = (title ? `<h4>${esc(title)}</h4>` : "") + items.map((it,i) => `<button data-si="${i}" ${it.danger?'style="color:var(--danger)"':""}>${esc(it.label)}</button>`).join("");
+  $("#sheet").classList.add("on");
+  $("#sheetBox").onclick = e => { const b = e.target.closest("button"); if (!b) return; $("#sheet").classList.remove("on"); items[+b.dataset.si].run(); };
+}
+$("#sheet").addEventListener("click", e => { if (e.target.id === "sheet") $("#sheet").classList.remove("on"); });
+function confirmDel(label, run){ sheet(label, [{label:"Supprimer", danger:true, run}, {label:"Annuler", run(){}}]); }
+function taskMenu(id){
+  const t = T(id); if (!t) return;
+  sheet(t.task.slice(0,80) + (t.task.length>80?"…":""), [
+    ...STATUTS.filter(s => s !== t.status).map(s => ({label:"Passer en « " + s + " »", async run(){ await Store.save("taches", {...t, status:s}); toast("Statut : " + s); render(); }})),
+    {label:"Ajouter une note", run(){ noteForm(id); }},
+    {label:"Modifier", run(){ go("#/tache-edit/" + id); }},
+    {label:"Supprimer", danger:true, run(){ confirmDel("Supprimer cette tâche ?", () => delTask(id)); }}
+  ]);
+}
+async function delTask(id){
+  for (const n of db.notes.filter(n => n.tache_id === id)) await Store.remove("notes", n.id);
+  await Store.remove("taches", id); if (selTask === id) selTask = null; toast("Tâche supprimée"); render();
+}
+
+/* ================= Routage ================= */
+function go(h, replace){ if (replace) { history.replaceState(null, "", h); render(); } else location.hash = h; }
+function render(){
+  const [, v = "partenaires", arg] = (location.hash || "#/partenaires").split("/");
+  formState = null;
+  closeDrawer();
+  if (v === "partenaire" && arg === "new") return views.partenaireForm(null);
+  if (v === "partenaire-edit") return views.partenaireForm(arg);
+  if (v === "tache-edit") return views.tacheForm(arg);
+  if (v === "produit" && arg === "new") return views.produitForm();
+  (views[v] || views.partenaires)(arg);
+}
+window.addEventListener("hashchange", render);
+
+/* ================= Événements globaux ================= */
+function openDrawer(){ $("#drawer").classList.add("on"); $("#scrim").classList.add("on"); }
+function closeDrawer(){ $("#drawer").classList.remove("on"); $("#scrim").classList.remove("on"); }
+$("#scrim").onclick = closeDrawer;
+document.addEventListener("keydown", e => { if (e.key === "Escape") { closeDrawer(); $("#sheet").classList.remove("on"); } });
+
+document.addEventListener("click", async e => {
+  const g = e.target.closest("[data-go]"); 
+  const more = e.target.closest("[data-more]");
+  const delp = e.target.closest("[data-delprod]");
+  if (delp) { e.preventDefault(); e.stopPropagation(); const id = delp.dataset.delprod; confirmDel("Supprimer ce produit ?", async () => { await Store.remove("produits", id); toast("Produit supprimé"); render(); }); return; }
+  if (more) { e.stopPropagation(); return taskMenu(more.dataset.more); }
+  const selc = e.target.closest("[data-sel]");
+  if (selc) { selTask = selc.dataset.sel; if (matchMedia("(max-width:900px)").matches) return go("#/tache/" + selTask); return views.tracker(); }
+  if (g) return go(g.dataset.go);
+  const cm = e.target.closest("[data-cmode]"); if (cm) { cal.mode = cm.dataset.cmode; return views.calendar(); }
+  const cn = e.target.closest("[data-cnav]"); if (cn) { const k = +cn.dataset.cnav; if (!k) cal.d = new Date(); else { const d = new Date(cal.d); if (cal.mode==="month") d.setMonth(d.getMonth()+k, 1); else d.setDate(d.getDate() + k*(cal.mode==="week"?7:1)); cal.d = d; } return views.calendar(); }
+  const fab = e.target.closest("[data-fab]");
+  if (fab) {
+    const [, v, arg] = location.hash.split("/");
+    const k = fab.dataset.fab, tid = fab.dataset.id || arg;
+    if (k === "newP") return go("#/partenaire/new");
+    if (k === "editP") return go("#/partenaire-edit/" + arg);
+    if (k === "editT") return go("#/tache-edit/" + tid);
+    if (k === "note") return noteForm(tid);
+    if (k === "newProd") return go("#/produit/new");
+  }
+  const a = e.target.closest("[data-act]");
+  if (a) {
+    const act = a.dataset.act, [, v, arg] = location.hash.split("/");
+    if (act === "menu") return openDrawer();
+    if (act === "back") return formState && formState.back ? go(formState.back, true) : (history.length > 1 ? history.back() : go("#/partenaires"));
+    if (act === "search") { const sbx = $("#searchbar"); sbx.hidden = !sbx.hidden; if (!sbx.hidden) $("#q").focus(); else { q = ""; $("#q").value = ""; render(); } return; }
+    if (act === "refresh") { await reload(); return toast("Données actualisées"); }
+    if (act === "grid") return go(v === "calendar" ? "#/tracker" : "#/tracker-inline");
+    if (act === "check") return go("#/tracker");
+    if (act === "trash") {
+      if (v === "partenaire") return confirmDel("Supprimer ce partenaire ? Ses tâches restent dans le tracker.", async () => { await Store.remove("partenaires", arg); for (const t of db.taches.filter(t => (t.partenaires||[]).includes(arg))) await Store.save("taches", {...t, partenaires:t.partenaires.filter(x => x !== arg)}); toast("Partenaire supprimé"); go("#/partenaires", true); });
+      if (v === "tache") return confirmDel("Supprimer cette tâche ?", async () => { await delTask(arg); go("#/tracker", true); });
+    }
+    if (act === "dots" && v === "partenaire") return sheet(null, [{label:"Modifier", run(){ go("#/partenaire-edit/" + arg); }}, {label:"Ajouter une tâche", run(){ go("#/tache/new"); }}, {label:"Écrire un email", run(){ const p = P(arg); p?.email ? location.href = "mailto:" + p.email : toast("Aucun email renseigné."); }}]);
+    if (act === "reset") return confirmDel("Remplacer les données locales par les données initiales ?", () => { localStorage.removeItem(LS); reload(); toast("Données réinitialisées"); });
+  }
+});
+document.addEventListener("change", async e => {
+  const d = e.target.closest("[data-due]");
+  if (d) { const t = T(d.dataset.due); if (t) { await Store.save("taches", {...t, due:d.value || null}); toast("Échéance enregistrée"); } }
+});
+$("#q").addEventListener("input", e => { q = e.target.value; render(); });
+$("#fCancel").onclick = () => formState && (formState.back ? go(formState.back, true) : history.back());
+$("#fSave").onclick = async () => { if (!formState) return; const b = $("#fSave"); b.disabled = true; try { await formState.onSave($("#frm")); } catch(err) { console.error(err); } finally { b.disabled = false; } };
+$("#shareBtn").onclick = async () => { closeDrawer(); const url = location.href.split("#")[0]; try { if (navigator.share) await navigator.share({title:CFG.APP_NAME, url}); else { await navigator.clipboard.writeText(url); toast("Lien copié"); } } catch(e){} };
+$("#exportBtn").onclick = () => {
+  closeDrawer();
+  const cols = [["Partenaires",t=>pNames(t)],["Activité",t=>t.activite],["Task",t=>t.task],["Due",t=>fmtD(t.due)],["Status",t=>t.status],["Direction",t=>t.direction],["Pilier PNDS",t=>t.pilier],["Lien SNSC",t=>t.snsc],["Lien santé numérique",t=>t.numerique],["Notes",t=>db.notes.filter(n=>n.tache_id===t.id).map(n=>n.texte).join(" | ")]];
+  const c = v => { const s = String(v ?? ""); return /[;"\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s; };
+  const csv = "\ufeff" + [cols.map(x=>x[0]).join(";"), ...db.taches.map(t => cols.map(x => c(x[1](t))).join(";"))].join("\r\n");
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"})); a.download = `tracker_partenaires_snis_${iso(new Date())}.csv`; document.body.appendChild(a); a.click(); a.remove();
+};
+$("#logout").onclick = async () => { closeDrawer(); await sb.auth.signOut(); };
+
+/* ================= Démarrage ================= */
+async function reload(){ await Store.load(); render(); }
+function loginScreen(){
+  chrome({title:CFG.APP_NAME || "Plan des partenaires SNIS"});
+  $("#lead").innerHTML = ""; $("#bottom").hidden = true;
+  $("#main").innerHTML = `<div class="login"><span class="applogo">${$(".appbar .applogo").innerHTML}</span><h2 style="font-weight:400;margin:0">${esc(CFG.APP_NAME || "Plan des partenaires SNIS")}</h2>
+    <p style="color:var(--muted)">Saisissez votre adresse email pour recevoir un lien de connexion.</p>
+    <input id="loginMail" type="email" placeholder="nom@exemple.org" autocomplete="email"><button class="btnp" id="loginBtn">Recevoir le lien</button><p id="loginMsg" style="color:var(--muted);min-height:1.5em"></p></div>`;
+  $("#loginBtn").onclick = async () => {
+    const email = $("#loginMail").value.trim(); if (!email) return;
+    const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: location.href.split("#")[0] } });
+    $("#loginMsg").textContent = error ? "Échec : " + error.message : "Lien envoyé. Ouvrez votre messagerie et cliquez sur le lien.";
+  };
+}
+async function boot(){
+  $("#dLogo").innerHTML = $(".appbar .applogo").innerHTML; $("#dName").textContent = CFG.APP_NAME || "Plan des partenaires SNIS"; document.title = CFG.APP_NAME || document.title;
+  if (sb && !session) return loginScreen();
+  if (sb) { $("#uMail").textContent = session.user.email; $("#uAv").textContent = (session.user.email||"?")[0].toUpperCase(); $("#logout").hidden = false; }
+  try { await Store.load(); } catch(err) { $("#main").innerHTML = `<div class="login"><h2 style="font-weight:400">Connexion à la base impossible</h2><p style="color:var(--muted)">${esc(err.message || err)}</p><p style="color:var(--muted)">Vérifiez la configuration Supabase et que le script <b>schema.sql</b> a bien été exécuté.</p></div>`; return; }
+  render();
+}
+Store.init().then(boot).catch(err => { toast("Supabase indisponible : passage en mode local"); sb = null; boot(); });
+</script>
+</body>
+</html>
