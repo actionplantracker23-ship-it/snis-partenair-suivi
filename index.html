@@ -51,7 +51,7 @@ main{flex:1;overflow:auto;position:relative}
 .pad{padding:24px}
 
 /* Barre du bas */
-nav.bottom{background:var(--navy);display:grid;grid-template-columns:repeat(4,1fr);flex:none;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.bottom{background:var(--navy);display:grid;grid-auto-flow:column;grid-auto-columns:1fr;flex:none;padding-bottom:env(safe-area-inset-bottom,0px)}
 nav.bottom a{color:#fff;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px 10px;font-size:.95rem;position:relative;opacity:.95}
 nav.bottom a.on{font-weight:500}
 nav.bottom a.on::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:56px;height:4px;background:#fff;border-radius:3px 3px 0 0}
@@ -203,6 +203,52 @@ table.inline{border-collapse:collapse;width:100%;min-width:900px;background:#fff
 .login .applogo svg{width:62px;height:62px}
 .login input{width:100%;border:1px solid #BFC3C9;border-radius:3px;padding:14px;margin:18px 0 12px}
 .btnp{background:var(--navy);color:#fff;border:0;border-radius:4px;padding:13px 22px;font-weight:500;width:100%}
+.btnp:disabled{opacity:.6;cursor:default}
+.login .lf input,.login .lf select{width:100%;border:1px solid #BFC3C9;border-radius:3px;padding:14px;margin:12px 0 0;background:#fff}
+.login .lf .btnp{margin-top:20px}
+.login .lmsg{color:var(--muted);min-height:1.5em;margin:14px 0 0}
+.login .lmsg.err{color:var(--danger)}
+.ltabs{display:flex;border-bottom:1px solid var(--line);margin:20px 0 4px}
+.ltabs button{flex:1;background:none;border:0;padding:12px 0;color:var(--muted);border-bottom:3px solid transparent}
+.ltabs button.on{color:var(--navy);border-bottom-color:var(--navy);font-weight:500}
+.lnk{background:none;border:0;color:var(--navy);margin-top:16px;text-decoration:underline;padding:4px}
+
+/* Tableau de bord */
+.dash{max-width:1100px;margin:0 auto;padding:20px 16px 120px;display:grid;gap:16px}
+.banner{background:#FFF7E0;border:1px solid #F0D58A;padding:12px 16px;border-radius:4px}
+.banner.info{background:#EEF3FF;border-color:#C9D6FB}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{background:#fff;border:1px solid var(--line);padding:16px}
+.kpi .v{font-size:2rem;font-weight:500;color:var(--navy);font-variant-numeric:tabular-nums}
+.kpi .l{color:var(--muted);font-size:.9rem;margin-top:4px}
+.kpi.warn .v{color:var(--danger)}
+.card{background:#fff;border:1px solid var(--line)}
+.card>h2{font-size:1.1rem;font-weight:600;margin:0;padding:14px 18px;border-bottom:1px solid var(--line)}
+.card .cb{padding:16px 18px}
+.big{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.big b{font-size:2.6rem;font-weight:500;color:var(--navy);font-variant-numeric:tabular-nums}
+.big span{color:var(--muted)}
+.sbar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:#EEF0F3;gap:2px}
+.sbar.lg{height:22px;border-radius:4px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;font-size:.9rem;color:#444}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+.drow{display:grid;grid-template-columns:minmax(120px,1.2fr) 40px 2fr 52px;gap:12px;align-items:center;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 18px;text-align:left}
+.drow:last-child{border-bottom:0}
+button.drow[data-go]:hover{background:var(--hover)}
+.drow.mine{background:#EEF3FF}
+.drow .dc{color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.drow .dp{text-align:right;font-weight:500;font-variant-numeric:tabular-nums}
+.dhead{color:var(--muted);font-size:.85rem;padding-top:8px;padding-bottom:8px}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.dlist .upit{padding:12px 18px}
+
+/* Comptes utilisateurs */
+.acct{display:grid;grid-template-columns:1.4fr 1.2fr 150px 110px;gap:12px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line)}
+.acct select{border:1px solid #BFC3C9;border-radius:3px;padding:10px;background:#fff;width:100%}
+.acct .t{overflow-wrap:anywhere}
+.acct .s{font-size:.85rem;color:var(--muted);margin-top:3px}
+.acct .s.pend{color:#9A5B00}
+.acct label{display:flex;gap:8px;align-items:center}
 
 @media (max-width:900px){
   .ptile .mono{padding-bottom:30px}
@@ -219,6 +265,10 @@ table.inline{border-collapse:collapse;width:100%;min-width:900px;background:#fff
   nav.bottom a{font-size:.8rem}
   .fabs{right:16px;bottom:calc(90px + env(safe-area-inset-bottom,0px))}
   .calnav{gap:30px}
+  .dgrid{grid-template-columns:1fr}
+  .drow{grid-template-columns:1fr 34px 46px;row-gap:8px}.drow .sbar{grid-column:1/-1;grid-row:2}
+  .acct{grid-template-columns:1fr 1fr}.acct .ae{grid-column:1/-1}
+  .login{margin:4vh 16px;padding:24px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -234,7 +284,8 @@ table.inline{border-collapse:collapse;width:100%;min-width:900px;background:#fff
 <main id="main"></main>
 <div class="fabs" id="fabs"></div>
 <nav class="bottom" id="bottom">
-  <a href="#/tache/new" data-nav="new"><svg class="i"><use href="#i-plus"/></svg>Nouvelle activité</a>
+  <a href="#/dashboard" data-nav="dashboard"><svg class="i"><use href="#i-dash"/></svg>Tableau de bord</a>
+  <a href="#/tache/new" data-nav="new" id="navNew"><svg class="i"><use href="#i-plus"/></svg>Nouvelle activité</a>
   <a href="#/tracker" data-nav="tracker"><svg class="i"><use href="#i-layers"/></svg>Tracker</a>
   <a href="#/calendar" data-nav="calendar"><svg class="i"><use href="#i-cal"/></svg>Calendar</a>
   <a href="#/produits" data-nav="produits"><svg class="i"><use href="#i-list"/></svg>Produits</a>
@@ -244,10 +295,12 @@ table.inline{border-collapse:collapse;width:100%;min-width:900px;background:#fff
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-label="Menu">
   <div class="hd"><span class="applogo" id="dLogo"></span><b id="dName">Plan des partenaires SNIS</b></div>
+  <a href="#/dashboard"><svg class="i"><use href="#i-dash"/></svg>Tableau de bord</a>
   <a href="#/produits"><svg class="i"><use href="#i-list"/></svg>Liste des produits</a>
   <a href="#/partenaires"><svg class="i"><use href="#i-users"/></svg>Partenaires SNIS</a>
   <a href="#/workstreams"><svg class="i"><use href="#i-pulse"/></svg>Workstreams</a>
   <a href="#/tracker-inline"><svg class="i"><use href="#i-table"/></svg>Tracker Inline</a>
+  <a href="#/comptes" id="navComptes" hidden><svg class="i"><use href="#i-key"/></svg>Comptes utilisateurs</a>
   <hr>
   <a href="#/about"><svg class="i"><use href="#i-info"/></svg>About</a>
   <button class="mi" id="shareBtn"><svg class="i"><use href="#i-share"/></svg>Share</button>
@@ -259,6 +312,8 @@ table.inline{border-collapse:collapse;width:100%;min-width:900px;background:#fff
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-dash" viewBox="0 0 24 24"><path d="M3.5 18a8.5 8.5 0 1 1 17 0"/><path d="M12 18l4.5-6"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h13M3 18h9"/></symbol>
   <symbol id="i-back" viewBox="0 0 24 24"><path d="M20 12H4M10 6l-6 6 6 6"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></symbol>
@@ -305,6 +360,10 @@ const PAL = [["#B5172A","#fff"],["#0B6E8E","#fff"],["#1F3C88","#fff"],["#2E7D5B"
 
 let db = {partenaires:[], taches:[], notes:[], produits:[]};
 let sb = null, session = null;
+let me = null;            // profil du compte connecté : {role, partenaire_id, actif}
+let authBusy = false;     // connexion en cours : on vérifie la structure avant d'afficher l'application
+let recovering = /type=recovery/.test(location.hash);
+let structures = null;
 let q = "";
 let selTask = null;
 let cal = {mode:"month", d:new Date()};
@@ -320,6 +379,14 @@ const P = id => db.partenaires.find(p => p.id === id);
 const T = id => db.taches.find(t => t.id === id);
 const pNames = t => (t.partenaires || []).map(id => P(id)?.nom).filter(Boolean).join(", ");
 const match = (...s) => !q || s.join(" ").toLowerCase().includes(q.toLowerCase());
+const SLAB = {"Not Started":"Non démarrée","In Progress":"En cours","Complete":"Achevée","En attente":"En attente","Cancel":"Annulée"};
+const SCOL = {"Not Started":"#9AA3AF","In Progress":"#2D6BEE","Complete":"#1E9E6A","En attente":"#E0A100","Cancel":"#C62828"};
+/* Droits : sans Supabase (mode local) tout est modifiable */
+const isAdmin = () => !sb || (me?.role === "admin" && me.actif);
+const myP = () => (sb && me?.actif) ? me.partenaire_id : null;
+const canCreate = () => isAdmin() || !!myP();
+const canEditTask = t => isAdmin() || (!!myP() && (t.partenaires || []).includes(myP()));
+const canEditPartner = p => isAdmin() || (!!myP() && p.id === myP());
 function toast(m){ const t=$("#toast"); t.textContent=m; t.classList.add("on"); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove("on"),2600); }
 function mono(nom){ let h=0; for(const c of nom) h=(h*31+c.charCodeAt(0))>>>0; const [bg,fg]=PAL[h%PAL.length]; return {bg,fg,txt:nom.length<=12?nom:nom.split(/\s+/).map(w=>w[0]).join("").slice(0,4).toUpperCase()}; }
 
@@ -330,7 +397,11 @@ const Store = {
       await new Promise((ok, ko) => { const s=document.createElement("script"); s.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"; s.onload=ok; s.onerror=ko; document.head.appendChild(s); });
       sb = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY);
       const { data } = await sb.auth.getSession(); session = data.session;
-      sb.auth.onAuthStateChange((_e, s) => { const was = !!session; session = s; if (!!s !== was) boot(); });
+      sb.auth.onAuthStateChange((ev, s) => {
+        if (ev === "PASSWORD_RECOVERY") { session = s; recovering = true; return boot(); }
+        const was = !!session; session = s; if (!s) me = null;
+        if (!!s !== was && !authBusy) boot();
+      });
     }
   },
   async load(){
@@ -385,7 +456,7 @@ function chrome({title, back=false, acts=[], fabs=[], nav=null, form=false}){
 const views = {};
 
 views.partenaires = () => {
-  chrome({title:"Partenaires SNIS", acts:["search","refresh"], fabs:[{k:"newP", icon:"i-plus", label:"Nouveau partenaire"}]});
+  chrome({title:"Partenaires SNIS", acts:["search","refresh"], fabs:isAdmin() ? [{k:"newP", icon:"i-plus", label:"Nouveau partenaire"}] : []});
   const list = db.partenaires.filter(p => match(p.nom, p.contacts, p.email));
   $("#main").innerHTML = list.length ? `<div class="pgrid">` + list.map(p => {
     const m = mono(p.nom);
@@ -409,7 +480,7 @@ function relTasks(tasks){
 
 views.partenaire = (id) => {
   const p = P(id); if (!p) return go("#/partenaires");
-  chrome({title:"Details", back:true, acts:["trash","dots","refresh"], fabs:[{k:"editP", icon:"i-editbox", label:"Modifier"}]});
+  chrome({title:"Details", back:true, acts:[...(isAdmin() ? ["trash"] : []), "dots", "refresh"], fabs:canEditPartner(p) ? [{k:"editP", icon:"i-editbox", label:"Modifier"}] : []});
   const tasks = db.taches.filter(t => (t.partenaires||[]).includes(id));
   const i = db.partenaires.indexOf(p), prev = db.partenaires[i-1], next = db.partenaires[i+1];
   const m = mono(p.nom);
@@ -430,24 +501,24 @@ views.partenaire = (id) => {
 
 function taskDetailHtml(t, inPanel){
   const notes = db.notes.filter(n => n.tache_id === t.id).sort((a,b) => (b.created_at||"").localeCompare(a.created_at||""));
-  const key = t.status.replace(/\s/g,"");
+  const key = t.status.replace(/\s/g,""), can = canEditTask(t);
   const f = (lb, v) => v ? `<div class="fld"><div class="lb">${lb}</div><div class="vl" style="font-size:1.1rem">${esc(v)}</div></div>` : "";
   return `<div class="stat-icon"><span>${ic("s-"+key)}</span>${esc(t.status).toUpperCase()}</div>
     <div class="fld"><div class="lb">Task</div><div class="vl">${esc(t.task)}</div></div>
-    <div class="fld"><div class="lb">Due</div><input class="datein" type="date" data-due="${t.id}" value="${esc(t.due||"")}"></div>
+    <div class="fld"><div class="lb">Due</div><input class="datein" type="date" data-due="${t.id}" value="${esc(t.due||"")}" ${can ? "" : "disabled"}></div>
     <div class="fld"><div class="lb">Status Label</div><div class="vl">${esc(t.status)}</div></div>
     ${f("Partenaire(s)", pNames(t))}${f("Activité", t.activite)}${f("Direction", t.direction)}${f("Pilier PNDS", t.pilier)}${f("Lien santé communautaire (SNSC)", t.snsc)}${f("Lien santé numérique", t.numerique)}
     <div class="sep"></div>
     <div class="relhead">Notes <span class="badge">${notes.length}</span></div>
     ${notes.map(n => `<div class="note">${ic("i-note")}<div><div class="d">${esc(new Date(n.created_at).toLocaleString("fr-FR"))}</div><div class="x">${esc(n.texte)}</div></div></div>`).join("")}
-    ${inPanel ? `<div class="ifabs"><button class="fab" data-fab="note" data-id="${t.id}" aria-label="Ajouter une note">${ic("i-chat")}</button><button class="fab" data-fab="editT" data-id="${t.id}" aria-label="Modifier">${ic("i-edit")}</button></div>` : ""}`;
+    ${inPanel && can ? `<div class="ifabs"><button class="fab" data-fab="note" data-id="${t.id}" aria-label="Ajouter une note">${ic("i-chat")}</button><button class="fab" data-fab="editT" data-id="${t.id}" aria-label="Modifier">${ic("i-edit")}</button></div>` : ""}`;
 }
 
 views.tache = (id) => {
   if (id === "new") return views.tacheForm(null);
   const t = T(id); if (!t) return go("#/tracker");
   selTask = id;
-  chrome({title:"Tracker Detail", back:true, acts:["trash","refresh"], fabs:[{k:"note", icon:"i-chat", label:"Ajouter une note"}, {k:"editT", icon:"i-edit", label:"Modifier"}]});
+  chrome({title:"Tracker Detail", back:true, acts:[...(isAdmin() ? ["trash"] : []), "refresh"], fabs:canEditTask(t) ? [{k:"note", icon:"i-chat", label:"Ajouter une note"}, {k:"editT", icon:"i-edit", label:"Modifier"}] : []});
   $("#main").innerHTML = `<div class="detail">${taskDetailHtml(t, false)}</div>`;
 };
 
@@ -458,7 +529,7 @@ views.tracker = () => {
   $("#main").innerHTML = `<div class="kanban">` + STATUTS.map(s => {
     const its = tasks.filter(t => t.status === s);
     return `<section class="kcol"><h2>${esc(s)} <small>${its.length || ""}</small></h2><div class="klist">${its.length ? its.map(t => `
-      <div class="kcard ${sel && sel.id===t.id?"sel":""}" data-sel="${t.id}"><div style="flex:1"><div class="t">${esc(t.task)}</div><div class="p">${esc(pNames(t) || t.activite)}</div></div><button class="more" data-more="${t.id}" aria-label="Actions">${ic("i-dots")}</button></div>`).join("") : `<div class="empty">No items</div>`}</div></section>`;
+      <div class="kcard ${sel && sel.id===t.id?"sel":""}" data-sel="${t.id}"><div style="flex:1"><div class="t">${esc(t.task)}</div><div class="p">${esc(pNames(t) || t.activite)}</div></div>${canEditTask(t) ? `<button class="more" data-more="${t.id}" aria-label="Actions">${ic("i-dots")}</button>` : ""}</div>`).join("") : `<div class="empty">No items</div>`}</div></section>`;
   }).join("") + `<section class="kdetail"><h2 style="font-size:1.15rem;font-weight:600;margin:0;padding:12px 18px;border-bottom:1px solid var(--line)">Tracker Detail</h2><div class="body">${sel ? taskDetailHtml(sel, true) : `<div class="empty">Sélectionnez une tâche</div>`}</div></section></div>`;
 };
 
@@ -513,10 +584,10 @@ views.calendar = () => {
 };
 
 views.produits = () => {
-  chrome({title:"Liste des produits", acts:["search","refresh"], nav:"produits", fabs:[{k:"newProd", icon:"i-plus", label:"Nouveau produit"}]});
+  chrome({title:"Liste des produits", acts:["search","refresh"], nav:"produits", fabs:canCreate() ? [{k:"newProd", icon:"i-plus", label:"Nouveau produit"}] : []});
   const list = db.produits.filter(pr => { const t = T(pr.tache_id); return match(pr.nom, t?.task, t ? pNames(t) : ""); });
   $("#main").innerHTML = `<div class="list">${list.length ? list.map(pr => { const t = T(pr.tache_id);
-    return `<a class="it" href="${esc(pr.url)}" target="_blank" rel="noopener" download="${esc(pr.nom)}">${ic("i-pdf")}<span style="flex:1"><div class="t">${esc(pr.nom)}</div><div class="s">${esc(t ? t.task : "Tâche supprimée")}${t ? " · " + esc(pNames(t)) : ""}</div></span><button class="kcard more" data-delprod="${pr.id}" aria-label="Supprimer">${ic("i-trash")}</button></a>`; }).join("") : `<div class="empty">No items</div>`}</div>`;
+    return `<a class="it" href="${esc(pr.url)}" target="_blank" rel="noopener" download="${esc(pr.nom)}">${ic("i-pdf")}<span style="flex:1"><div class="t">${esc(pr.nom)}</div><div class="s">${esc(t ? t.task : "Tâche supprimée")}${t ? " · " + esc(pNames(t)) : ""}</div></span>${t && canEditTask(t) ? `<button class="kcard more" data-delprod="${pr.id}" aria-label="Supprimer">${ic("i-trash")}</button>` : ""}</a>`; }).join("") : `<div class="empty">No items</div>`}</div>`;
 };
 
 views.workstreams = () => {
@@ -535,6 +606,82 @@ views.about = () => {
   ${sb ? "" : `<div class="fld" style="padding-top:20px"><button class="btnp" style="width:auto;background:#fff;color:var(--danger);border:1px solid var(--danger)" data-act="reset">Réinitialiser les données locales</button></div>`}</div>`;
 };
 
+/* ================= Tableau de bord ================= */
+function stats(tasks){
+  const c = Object.fromEntries(STATUTS.map(s => [s, 0]));
+  for (const t of tasks) c[t.status] = (c[t.status] || 0) + 1;
+  const actives = tasks.length - c.Cancel, today = iso(new Date());
+  return {c, n:tasks.length, actives, pct: actives ? Math.round(100 * c.Complete / actives) : 0,
+    late: tasks.filter(t => t.due && t.due < today && t.status !== "Complete" && t.status !== "Cancel").length};
+}
+function stackBar(st, lg){
+  const label = STATUTS.filter(s => st.c[s]).map(s => `${SLAB[s]} : ${st.c[s]}`).join(", ");
+  return `<div class="sbar ${lg ? "lg" : ""}" role="img" aria-label="${esc(label || "Aucune activité")}">` +
+    STATUTS.filter(s => st.c[s]).map(s => `<span style="flex:${st.c[s]};background:${SCOL[s]}" title="${SLAB[s]} : ${st.c[s]}"></span>`).join("") + `</div>`;
+}
+function dashRows(items){
+  return `<div class="drow dhead"><span>Nom</span><span class="dc">Act.</span><span>Répartition par statut</span><span class="dp">Achevé</span></div>` +
+    items.map(x => `<${x.go ? `button data-go="${x.go}"` : "div"} class="drow ${x.mine ? "mine" : ""}"><span class="dn">${esc(x.label)}</span><span class="dc">${x.st.n}</span>${stackBar(x.st)}<span class="dp">${x.st.pct} %</span></${x.go ? "button" : "div"}>`).join("");
+}
+views.dashboard = () => {
+  chrome({title:"Tableau de bord", acts:["refresh"], nav:"dashboard"});
+  const all = stats(db.taches), mineId = myP(), today = iso(new Date()), in30 = iso(new Date(Date.now() + 30*864e5));
+  const open = t => t.status !== "Complete" && t.status !== "Cancel";
+  let banner = "";
+  if (sb && me && !me.actif) banner = `<div class="banner">Votre compte est en attente de validation par l'administrateur. Vous pouvez consulter le tableau de bord, mais pas encore modifier les activités.</div>`;
+  else if (mineId && !isAdmin()) banner = `<div class="banner info">Connecté pour <b>${esc(P(mineId)?.nom || "votre structure")}</b> : vous pouvez mettre à jour les activités de votre structure.</div>`;
+  else if (sb && me && !me.partenaire_id && me.role !== "admin") banner = `<div class="banner">Votre compte n'est rattaché à aucune structure. Contactez l'administrateur.</div>`;
+  const kpi = (v, l, cls = "") => `<div class="kpi ${cls}"><div class="v">${v}</div><div class="l">${l}</div></div>`;
+  const byP = db.partenaires.map(p => ({label:p.nom, go:"#/partenaire/" + p.id, mine:p.id === mineId, st:stats(db.taches.filter(t => (t.partenaires || []).includes(p.id)))}))
+    .filter(x => x.st.n).sort((a, b) => b.mine - a.mine || b.st.pct - a.st.pct || b.st.n - a.st.n || a.label.localeCompare(b.label, "fr"));
+  const piliers = [...new Set(db.taches.map(t => t.pilier || ""))].map(pl => ({label:pl || "Non rattaché", st:stats(db.taches.filter(t => (t.pilier || "") === pl))}))
+    .sort((a, b) => b.st.n - a.st.n);
+  const late = db.taches.filter(t => t.due && t.due < today && open(t)).sort((a, b) => a.due.localeCompare(b.due));
+  const soon = db.taches.filter(t => t.due && t.due >= today && t.due <= in30 && open(t)).sort((a, b) => a.due.localeCompare(b.due));
+  const tlist = (arr, empty) => arr.length ? arr.slice(0, 12).map(t => `<div class="upit" data-go="#/tache/${t.id}"><div class="r1"><span>${esc(t.task)}</span><small>${fmtD(t.due)}</small></div><div class="p">${esc(pNames(t))} · ${esc(SLAB[t.status] || t.status)}</div></div>`).join("") + (arr.length > 12 ? `<div class="upit" style="color:var(--muted)">… et ${arr.length - 12} autre(s)</div>` : "") : `<div class="cb" style="color:var(--muted)">${empty}</div>`;
+  $("#main").innerHTML = `<div class="dash">${banner}
+    <div class="kpis">${kpi(all.n, "Activités suivies")}${kpi(all.c["Complete"], "Achevées")}${kpi(all.c["In Progress"], "En cours")}${kpi(all.c["Not Started"], "Non démarrées")}${kpi(all.c["En attente"], "En attente")}${kpi(all.late, "En retard", all.late ? "warn" : "")}</div>
+    <section class="card"><h2>État d'avancement global</h2><div class="cb">
+      <div class="big"><b>${all.pct} %</b><span>des activités achevées (${all.c.Complete} sur ${all.actives}, hors activités annulées)</span></div>
+      ${stackBar(all, true)}
+      <div class="legend">${STATUTS.map(s => `<span><i style="background:${SCOL[s]}"></i>${SLAB[s]} : ${all.c[s] || 0}</span>`).join("")}</div>
+    </div></section>
+    <section class="card"><h2>Avancement par partenaire</h2>${byP.length ? dashRows(byP) : `<div class="cb">Aucune activité.</div>`}</section>
+    <section class="card"><h2>Avancement par pilier PNDS</h2>${dashRows(piliers)}</section>
+    <div class="dgrid">
+      <section class="card dlist"><h2>En retard (${late.length})</h2>${tlist(late, "Aucune activité en retard.")}</section>
+      <section class="card dlist"><h2>Échéances des 30 prochains jours (${soon.length})</h2>${tlist(soon, "Aucune échéance proche.")}</section>
+    </div></div>`;
+};
+
+/* ================= Comptes utilisateurs (administrateur) ================= */
+views.comptes = async () => {
+  if (!sb || !isAdmin()) return go("#/dashboard", true);
+  chrome({title:"Comptes utilisateurs", back:true, acts:["refresh"]});
+  $("#main").innerHTML = `<div class="empty">Chargement…</div>`;
+  const { data, error } = await sb.from("profils").select("*").order("created_at");
+  if (location.hash !== "#/comptes") return;
+  if (error) { $("#main").innerHTML = `<div class="empty">Impossible de charger les comptes : ${esc(error.message)}</div>`; return; }
+  const pend = data.filter(u => !u.actif).length;
+  $("#main").innerHTML = `<div class="list"><h3>${data.length} compte(s)${pend ? ` · <b>${pend} en attente de validation</b>` : ""}</h3>` + data.map(u => `<div class="acct" data-uid="${u.user_id}">
+      <div class="ae"><div class="t">${esc(u.email)}</div><div class="s ${u.actif ? "" : "pend"}">${u.actif ? "Validé" : "En attente de validation"} · inscrit le ${esc(new Date(u.created_at).toLocaleDateString("fr-FR"))}</div></div>
+      <select data-f="partenaire_id" aria-label="Structure"><option value="">— Aucune structure —</option>${db.partenaires.map(p => `<option value="${p.id}" ${p.id === u.partenaire_id ? "selected" : ""}>${esc(p.nom)}</option>`).join("")}</select>
+      <select data-f="role" aria-label="Rôle"><option value="partenaire" ${u.role === "partenaire" ? "selected" : ""}>Structure</option><option value="admin" ${u.role === "admin" ? "selected" : ""}>Administrateur</option></select>
+      <label><input type="checkbox" data-f="actif" ${u.actif ? "checked" : ""}> Validé</label>
+    </div>`).join("") + `</div>`;
+};
+async function saveAccount(el){
+  const row = el.closest("[data-uid]"), uid = row.dataset.uid, f = el.dataset.f;
+  const val = f === "actif" ? el.checked : (el.value || null);
+  if (uid === session.user.id && ((f === "role" && val !== "admin") || (f === "actif" && !val))) {
+    toast("Vous ne pouvez pas retirer vos propres droits d'administrateur."); return views.comptes();
+  }
+  const { error } = await sb.from("profils").update({[f]: val}).eq("user_id", uid);
+  if (error) { toast("Échec : " + error.message); return views.comptes(); }
+  toast("Compte mis à jour");
+  if (f === "actif") views.comptes();
+}
+
 /* ================= Formulaires ================= */
 function formRow(label, html, req){ return `<div class="frow"><label>${esc(label)}${req?` <span class="req">*</span>`:""}</label><div>${html}</div></div>`; }
 function openForm(title, html, onSave, back){
@@ -544,10 +691,13 @@ function openForm(title, html, onSave, back){
 }
 
 views.tacheForm = (id) => {
+  if (id ? !(T(id) && canEditTask(T(id))) : !canCreate()) { toast("Vous ne pouvez modifier que les activités de votre structure."); return go("#/dashboard", true); }
+  const mine = isAdmin() ? null : myP();
   const t = id ? T(id) : {id:uid(), partenaires:[], activite:"", task:"", due:"", status:"Not Started", direction:"", pilier:"", snsc:"", numerique:""};
+  if (mine && !t.partenaires.includes(mine)) t.partenaires = [...t.partenaires, mine];
   const dl = (n, arr) => `<datalist id="${n}">${[...new Set(arr.filter(Boolean))].sort().map(v => `<option value="${esc(v)}">`).join("")}</datalist>`;
   openForm(id ? "Modifier la tâche" : "Nouvelle activité",
-    formRow("Partenaires", `<div class="checks">${db.partenaires.map(p => `<label><input type="checkbox" name="pt" value="${p.id}" ${t.partenaires.includes(p.id)?"checked":""}> ${esc(p.nom)}</label>`).join("")}</div>`, true) +
+    formRow("Partenaires", `<div class="checks">${db.partenaires.map(p => `<label><input type="checkbox" name="pt" value="${p.id}" ${t.partenaires.includes(p.id)?"checked":""} ${p.id===mine?"disabled":""}> ${esc(p.nom)}</label>`).join("")}</div>`, true) +
     formRow("Activité", `<input name="activite" list="dlA" value="${esc(t.activite)}" required>${dl("dlA", db.taches.map(x=>x.activite))}`, true) +
     formRow("Task", `<textarea name="task" required>${esc(t.task)}</textarea>`, true) +
     formRow("Due", `<input type="date" name="due" value="${esc(t.due||"")}">`) +
@@ -558,6 +708,7 @@ views.tacheForm = (id) => {
     formRow("Lien santé numérique", `<input name="numerique" list="dlN" value="${esc(t.numerique)}">${dl("dlN", db.taches.map(x=>x.numerique))}`),
     async f => {
       const pts = [...f.querySelectorAll("input[name=pt]:checked")].map(x => x.value);
+      if (mine && !pts.includes(mine)) pts.push(mine);
       if (!pts.length) return toast("Choisissez au moins un partenaire.");
       if (!f.activite.value.trim() || !f.task.value.trim()) return toast("Renseignez l'activité et la tâche.");
       await Store.save("taches", {...t, partenaires:pts, activite:f.activite.value.trim(), task:f.task.value.trim(), due:f.due.value||null, status:f.status.value, direction:f.direction.value.trim(), pilier:f.pilier.value, snsc:f.snsc.value.trim(), numerique:f.numerique.value.trim()});
@@ -566,6 +717,7 @@ views.tacheForm = (id) => {
 };
 
 views.partenaireForm = (id) => {
+  if (id ? !(P(id) && canEditPartner(P(id))) : !isAdmin()) { toast("Action réservée à l'administrateur."); return go("#/partenaires", true); }
   const p = id ? P(id) : {id:uid(), nom:"", email:"", contacts:"", photo:""};
   let photo = p.photo;
   openForm(id ? "Modifier le partenaire" : "Nouveau partenaire",
@@ -584,9 +736,10 @@ views.partenaireForm = (id) => {
 };
 
 views.produitForm = () => {
+  if (!canCreate()) return go("#/produits", true);
   let file = null;
   openForm("Produits",
-    formRow("Task", `<select name="tache"><option value=""></option>${db.taches.map(t => `<option value="${t.id}" ${t.id===selTask?"selected":""}>${esc(t.task.slice(0,110))}</option>`).join("")}</select>`, true) +
+    formRow("Task", `<select name="tache"><option value=""></option>${db.taches.filter(canEditTask).map(t => `<option value="${t.id}" ${t.id===selTask?"selected":""}>${esc(t.task.slice(0,110))}</option>`).join("")}</select>`, true) +
     formRow("fichier", `<div class="filebox" id="fileBox">${ic("i-pdf")}</div>`, true),
     async f => {
       if (!f.tache.value) return toast("Choisissez la tâche concernée.");
@@ -617,12 +770,12 @@ function sheet(title, items){
 $("#sheet").addEventListener("click", e => { if (e.target.id === "sheet") $("#sheet").classList.remove("on"); });
 function confirmDel(label, run){ sheet(label, [{label:"Supprimer", danger:true, run}, {label:"Annuler", run(){}}]); }
 function taskMenu(id){
-  const t = T(id); if (!t) return;
+  const t = T(id); if (!t || !canEditTask(t)) return;
   sheet(t.task.slice(0,80) + (t.task.length>80?"…":""), [
     ...STATUTS.filter(s => s !== t.status).map(s => ({label:"Passer en « " + s + " »", async run(){ await Store.save("taches", {...t, status:s}); toast("Statut : " + s); render(); }})),
     {label:"Ajouter une note", run(){ noteForm(id); }},
     {label:"Modifier", run(){ go("#/tache-edit/" + id); }},
-    {label:"Supprimer", danger:true, run(){ confirmDel("Supprimer cette tâche ?", () => delTask(id)); }}
+    ...(isAdmin() ? [{label:"Supprimer", danger:true, run(){ confirmDel("Supprimer cette tâche ?", () => delTask(id)); }}] : [])
   ]);
 }
 async function delTask(id){
@@ -633,14 +786,15 @@ async function delTask(id){
 /* ================= Routage ================= */
 function go(h, replace){ if (replace) { history.replaceState(null, "", h); render(); } else location.hash = h; }
 function render(){
-  const [, v = "partenaires", arg] = (location.hash || "#/partenaires").split("/");
+  if (sb && (!session || recovering)) return;
+  const [, v = "dashboard", arg] = (location.hash.startsWith("#/") ? location.hash : "#/dashboard").split("/");
   formState = null;
   closeDrawer();
   if (v === "partenaire" && arg === "new") return views.partenaireForm(null);
   if (v === "partenaire-edit") return views.partenaireForm(arg);
   if (v === "tache-edit") return views.tacheForm(arg);
   if (v === "produit" && arg === "new") return views.produitForm();
-  (views[v] || views.partenaires)(arg);
+  (views[v] || views.dashboard)(arg);
 }
 window.addEventListener("hashchange", render);
 
@@ -680,17 +834,18 @@ document.addEventListener("click", async e => {
     if (act === "refresh") { await reload(); return toast("Données actualisées"); }
     if (act === "grid") return go(v === "calendar" ? "#/tracker" : "#/tracker-inline");
     if (act === "check") return go("#/tracker");
-    if (act === "trash") {
+    if (act === "trash" && isAdmin()) {
       if (v === "partenaire") return confirmDel("Supprimer ce partenaire ? Ses tâches restent dans le tracker.", async () => { await Store.remove("partenaires", arg); for (const t of db.taches.filter(t => (t.partenaires||[]).includes(arg))) await Store.save("taches", {...t, partenaires:t.partenaires.filter(x => x !== arg)}); toast("Partenaire supprimé"); go("#/partenaires", true); });
       if (v === "tache") return confirmDel("Supprimer cette tâche ?", async () => { await delTask(arg); go("#/tracker", true); });
     }
-    if (act === "dots" && v === "partenaire") return sheet(null, [{label:"Modifier", run(){ go("#/partenaire-edit/" + arg); }}, {label:"Ajouter une tâche", run(){ go("#/tache/new"); }}, {label:"Écrire un email", run(){ const p = P(arg); p?.email ? location.href = "mailto:" + p.email : toast("Aucun email renseigné."); }}]);
+    if (act === "dots" && v === "partenaire") return sheet(null, [...(P(arg) && canEditPartner(P(arg)) ? [{label:"Modifier", run(){ go("#/partenaire-edit/" + arg); }}] : []), ...(canCreate() ? [{label:"Ajouter une tâche", run(){ go("#/tache/new"); }}] : []), {label:"Écrire un email", run(){ const p = P(arg); p?.email ? location.href = "mailto:" + p.email : toast("Aucun email renseigné."); }}]);
     if (act === "reset") return confirmDel("Remplacer les données locales par les données initiales ?", () => { localStorage.removeItem(LS); reload(); toast("Données réinitialisées"); });
   }
 });
 document.addEventListener("change", async e => {
+  const af = e.target.closest("[data-f]"); if (af && af.closest(".acct")) return saveAccount(af);
   const d = e.target.closest("[data-due]");
-  if (d) { const t = T(d.dataset.due); if (t) { await Store.save("taches", {...t, due:d.value || null}); toast("Échéance enregistrée"); } }
+  if (d) { const t = T(d.dataset.due); if (t && canEditTask(t)) { await Store.save("taches", {...t, due:d.value || null}); toast("Échéance enregistrée"); } }
 });
 $("#q").addEventListener("input", e => { q = e.target.value; render(); });
 $("#fCancel").onclick = () => formState && (formState.back ? go(formState.back, true) : history.back());
@@ -707,26 +862,114 @@ $("#logout").onclick = async () => { closeDrawer(); await sb.auth.signOut(); };
 
 /* ================= Démarrage ================= */
 async function reload(){ await Store.load(); render(); }
-function loginScreen(){
-  chrome({title:CFG.APP_NAME || "Plan des partenaires SNIS"});
-  $("#lead").innerHTML = ""; $("#bottom").hidden = true;
-  $("#main").innerHTML = `<div class="login"><span class="applogo">${$(".appbar .applogo").innerHTML}</span><h2 style="font-weight:400;margin:0">${esc(CFG.APP_NAME || "Plan des partenaires SNIS")}</h2>
-    <p style="color:var(--muted)">Saisissez votre adresse email pour recevoir un lien de connexion.</p>
-    <input id="loginMail" type="email" placeholder="nom@exemple.org" autocomplete="email"><button class="btnp" id="loginBtn">Recevoir le lien</button><p id="loginMsg" style="color:var(--muted);min-height:1.5em"></p></div>`;
-  $("#loginBtn").onclick = async () => {
-    const email = $("#loginMail").value.trim(); if (!email) return;
-    const btn = $("#loginBtn"); if (btn.disabled) return;
-    btn.disabled = true; $("#loginMsg").textContent = "Envoi en cours…";
-    const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: location.href.split("#")[0] } });
-    $("#loginMsg").textContent = error ? (error.status === 429 ? "Trop de demandes : patientez une minute avant de redemander un lien." : "Échec : " + error.message) : "Lien envoyé. Ouvrez votre messagerie et cliquez sur le lien.";
-    setTimeout(() => { btn.disabled = false; }, error ? 5000 : 60000);
+const APPN = () => CFG.APP_NAME || "Plan des partenaires SNIS";
+const baseUrl = () => location.href.split("#")[0];
+function authShell(inner){
+  chrome({title:APPN()});
+  $("#lead").innerHTML = ""; $("#bottom").hidden = true; $("#fabs").innerHTML = "";
+  $("#main").innerHTML = `<div class="login"><span class="applogo">${$(".appbar .applogo").innerHTML}</span><h2 style="font-weight:400;margin:0">${esc(APPN())}</h2>${inner}<p class="lmsg" id="loginMsg" role="status"></p></div>`;
+}
+function lmsg(t, err){ const m = $("#loginMsg"); m.textContent = t; m.classList.toggle("err", !!err); }
+function authErr(error){
+  if (error.status === 429) return "Trop de demandes : patientez une minute puis réessayez.";
+  if (/Invalid login credentials/i.test(error.message)) return "Email ou mot de passe incorrect.";
+  if (/Email not confirmed/i.test(error.message)) return "Confirmez d'abord votre adresse email avec le lien reçu, puis reconnectez-vous.";
+  if (/Password should be/i.test(error.message)) return "Mot de passe trop faible : au moins 8 caractères.";
+  return "Échec : " + error.message;
+}
+async function loadStructures(){
+  if (!structures) { const { data, error } = await sb.rpc("liste_structures"); structures = error ? [] : data; }
+  return structures;
+}
+async function loadMe(){
+  await sb.rpc("creer_mon_profil");
+  const { data } = await sb.from("profils").select("*").eq("user_id", session.user.id).maybeSingle();
+  me = data || null;
+}
+async function loginScreen(mode = "login"){
+  const st = await loadStructures();
+  const sel = admin => `<select id="lStruct" aria-label="Structure" required><option value="">Nom de la structure…</option>${admin ? `<option value="admin">Administration SNIS (administrateur)</option>` : ""}${st.map(p => `<option value="${p.id}">${esc(p.nom)}</option>`).join("")}</select>`;
+  const tabs = `<div class="ltabs"><button data-lmode="login" class="${mode === "login" ? "on" : ""}">Se connecter</button><button data-lmode="signup" class="${mode === "signup" ? "on" : ""}">Créer un compte</button></div>`;
+  const mail = `<input id="lMail" type="email" placeholder="Adresse email" aria-label="Adresse email" autocomplete="email">`;
+  if (mode === "login") authShell(tabs + `<form class="lf" onsubmit="return false">${sel(true)}${mail}
+      <input id="lPass" type="password" placeholder="Mot de passe" aria-label="Mot de passe" autocomplete="current-password">
+      <button class="btnp" id="lGo">Se connecter</button></form><button class="lnk" data-lmode="forgot">Mot de passe oublié ?</button>`);
+  else if (mode === "signup") authShell(tabs + `<p style="color:var(--muted);margin:14px 0 0">Créez le compte de votre structure. L'administrateur le validera avant que vous puissiez modifier vos activités.</p>
+      <form class="lf" onsubmit="return false">${sel(false)}${mail}
+      <input id="lPass" type="password" placeholder="Mot de passe (8 caractères minimum)" aria-label="Mot de passe" autocomplete="new-password">
+      <input id="lPass2" type="password" placeholder="Confirmez le mot de passe" aria-label="Confirmation du mot de passe" autocomplete="new-password">
+      <button class="btnp" id="lGo">Créer le compte</button></form>`);
+  else authShell(`<p style="color:var(--muted);margin:18px 0 0">Saisissez votre adresse email : vous recevrez un lien pour choisir un nouveau mot de passe.</p>
+      <form class="lf" onsubmit="return false">${mail}<button class="btnp" id="lGo">Recevoir le lien</button></form><button class="lnk" data-lmode="login">Retour à la connexion</button>`);
+  $("#main").querySelectorAll("[data-lmode]").forEach(b => b.onclick = () => loginScreen(b.dataset.lmode));
+  $("#lGo").onclick = async () => {
+    const btn = $("#lGo"); if (btn.disabled) return;
+    const email = $("#lMail").value.trim(), pass = $("#lPass")?.value || "", struct = $("#lStruct")?.value;
+    if (mode !== "forgot" && !struct) return lmsg("Choisissez le nom de votre structure.", true);
+    if (!email) return lmsg("Saisissez votre adresse email.", true);
+    if (mode !== "forgot" && !pass) return lmsg("Saisissez votre mot de passe.", true);
+    if (mode === "signup" && pass.length < 8) return lmsg("Le mot de passe doit contenir au moins 8 caractères.", true);
+    if (mode === "signup" && pass !== $("#lPass2").value) return lmsg("Les deux mots de passe ne correspondent pas.", true);
+    btn.disabled = true; lmsg("Veuillez patienter…");
+    try {
+      if (mode === "forgot") {
+        const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: baseUrl() });
+        return error ? lmsg(authErr(error), true) : lmsg("Si un compte existe pour cette adresse, un email vient de vous être envoyé.");
+      }
+      if (mode === "signup") {
+        authBusy = true;
+        const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { partenaire_id: struct }, emailRedirectTo: baseUrl() } });
+        authBusy = false;
+        if (error) return lmsg(authErr(error), true);
+        if (data.user && data.user.identities && !data.user.identities.length) return lmsg("Un compte existe déjà pour cette adresse. Connectez-vous ou utilisez « Mot de passe oublié ».", true);
+        if (data.session) { session = data.session; return boot(); }
+        return lmsg("Compte créé. Ouvrez l'email de confirmation que vous venez de recevoir, puis connectez-vous. L'administrateur validera ensuite votre compte.");
+      }
+      authBusy = true;
+      const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+      if (error) { authBusy = false; return lmsg(authErr(error), true); }
+      session = data.session; await loadMe();
+      const ok = me && (me.role === "admin" || (struct !== "admin" && me.partenaire_id === struct));
+      if (!ok) {
+        await sb.auth.signOut(); session = null; me = null; authBusy = false;
+        return lmsg(struct === "admin" ? "Ce compte n'a pas les droits d'administrateur." : "Ce compte n'est pas rattaché à la structure choisie.", true);
+      }
+      authBusy = false; boot();
+    } finally { btn.disabled = false; }
   };
 }
+function recoveryScreen(){
+  authShell(`<p style="color:var(--muted);margin:18px 0 0">Choisissez votre nouveau mot de passe.</p>
+    <form class="lf" onsubmit="return false"><input id="lPass" type="password" placeholder="Nouveau mot de passe (8 caractères minimum)" aria-label="Nouveau mot de passe" autocomplete="new-password">
+    <input id="lPass2" type="password" placeholder="Confirmez le mot de passe" aria-label="Confirmation du mot de passe" autocomplete="new-password">
+    <button class="btnp" id="lGo">Enregistrer</button></form>`);
+  $("#lGo").onclick = async () => {
+    const pass = $("#lPass").value;
+    if (pass.length < 8) return lmsg("Le mot de passe doit contenir au moins 8 caractères.", true);
+    if (pass !== $("#lPass2").value) return lmsg("Les deux mots de passe ne correspondent pas.", true);
+    $("#lGo").disabled = true;
+    const { error } = await sb.auth.updateUser({ password: pass });
+    $("#lGo").disabled = false;
+    if (error) return lmsg(authErr(error), true);
+    recovering = false; history.replaceState(null, "", baseUrl() + "#/dashboard"); toast("Mot de passe enregistré"); boot();
+  };
+}
+function applyAccess(){
+  $("#navNew").hidden = !canCreate();
+  $("#navComptes").hidden = !(sb && isAdmin());
+  if (!sb) return;
+  const role = me?.role === "admin" ? "Administrateur" : me?.partenaire_id ? (P(me.partenaire_id)?.nom || "Structure") + (me.actif ? "" : " (en attente de validation)") : "Aucune structure";
+  $("#uMail").innerHTML = `${esc(session.user.email)}<br><small>${esc(role)}</small>`;
+  $("#uAv").textContent = (session.user.email || "?")[0].toUpperCase(); $("#logout").hidden = false;
+}
 async function boot(){
-  $("#dLogo").innerHTML = $(".appbar .applogo").innerHTML; $("#dName").textContent = CFG.APP_NAME || "Plan des partenaires SNIS"; document.title = CFG.APP_NAME || document.title;
+  $("#dLogo").innerHTML = $(".appbar .applogo").innerHTML; $("#dName").textContent = APPN(); document.title = APPN();
+  if (sb && recovering && session) return recoveryScreen();
   if (sb && !session) return loginScreen();
-  if (sb) { $("#uMail").textContent = session.user.email; $("#uAv").textContent = (session.user.email||"?")[0].toUpperCase(); $("#logout").hidden = false; }
-  try { await Store.load(); } catch(err) { $("#main").innerHTML = `<div class="login"><h2 style="font-weight:400">Connexion à la base impossible</h2><p style="color:var(--muted)">${esc(err.message || err)}</p><p style="color:var(--muted)">Vérifiez la configuration Supabase et que le script <b>schema.sql</b> a bien été exécuté.</p></div>`; return; }
+  try { if (sb && (!me || me.user_id !== session.user.id)) await loadMe(); await Store.load(); }
+  catch(err) { $("#main").innerHTML = `<div class="login"><h2 style="font-weight:400">Connexion à la base impossible</h2><p style="color:var(--muted)">${esc(err.message || err)}</p></div>`; return; }
+  applyAccess();
+  if (!location.hash.startsWith("#/")) history.replaceState(null, "", baseUrl() + "#/dashboard");
   render();
 }
 Store.init().then(boot).catch(err => { toast("Supabase indisponible : passage en mode local"); sb = null; boot(); });
