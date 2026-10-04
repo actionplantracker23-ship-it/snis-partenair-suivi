@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#00873E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Partenaires SNIS">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Plan des partenaires SNIS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -346,6 +353,7 @@ table.gt{width:100%;border-collapse:collapse;font-size:.9rem}
   <hr>
   <a href="#/about"><svg class="i"><use href="#i-info"/></svg>About</a>
   <button class="mi" id="shareBtn"><svg class="i"><use href="#i-share"/></svg>Share</button>
+  <button class="mi" id="installBtn" hidden><svg class="i"><use href="#i-down"/></svg>Installer l'application</button>
   <button class="mi" id="pwBtn" hidden><svg class="i"><use href="#i-key"/></svg>Changer mon mot de passe</button>
   <button class="mi" id="exportBtn"><svg class="i"><use href="#i-down"/></svg>Exporter (CSV)</button>
   <div class="ft"><div class="user"><span class="av" id="uAv">L</span><span id="uMail">Mode local (ce navigateur)</span></div><button class="logout" id="logout" hidden>Log Out</button></div>
@@ -1082,6 +1090,20 @@ async function boot(){
   if (!location.hash.startsWith("#/")) history.replaceState(null, "", baseUrl() + "#/dashboard");
   render();
 }
+/* ================= Application installable (PWA) ================= */
+let installEvt = null;
+const isStandalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+if ("serviceWorker" in navigator && isSecureContext) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; $("#installBtn").hidden = false; });
+addEventListener("appinstalled", () => { installEvt = null; $("#installBtn").hidden = true; toast("Application installée"); });
+if (isIOS && !isStandalone()) $("#installBtn").hidden = false;
+$("#installBtn").onclick = async () => {
+  closeDrawer();
+  if (installEvt) { installEvt.prompt(); const { outcome } = await installEvt.userChoice; installEvt = null; if (outcome === "accepted") $("#installBtn").hidden = true; return; }
+  sheet("Installer sur iPhone / iPad", [{label:"Dans Safari, touchez le bouton Partager, puis « Sur l'écran d'accueil ».", run(){}}]);
+};
+
 Store.init().then(boot).catch(err => { toast("Supabase indisponible : passage en mode local"); sb = null; boot(); });
 </script>
 </body>
