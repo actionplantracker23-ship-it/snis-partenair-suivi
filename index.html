@@ -7,7 +7,7 @@
 <title>Plan des partenaires SNIS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>
 /* ============ CONFIGURATION ============
    Laissez vide pour un fonctionnement local (données dans le navigateur).
@@ -30,7 +30,7 @@ window.APP_CONFIG = {
 *,*::before,*::after{box-sizing:inherit}
 [hidden]{display:none!important}
 html,body{height:100%;margin:0}
-body{font-family:"Rubik","Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:16px;display:flex;flex-direction:column;overflow:hidden}
+body{font-family:"EB Garamond",Garamond,"Times New Roman",serif;font-variant-numeric:lining-nums;background:var(--bg);color:var(--text);font-size:18px;display:flex;flex-direction:column;overflow:hidden}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid #4C6FFF;outline-offset:2px}
@@ -225,7 +225,7 @@ table.inline{border-collapse:collapse;width:100%;min-width:900px;background:#fff
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
 .kpi{background:#fff;border:1px solid var(--line);border-top:3px solid var(--navy);padding:14px 16px}
 .kpi .l{color:#333;font-size:.85rem}
-.kpi .v{font-size:1.9rem;font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums;margin-top:6px}
+.kpi .v{font-size:1.9rem;font-weight:600;color:var(--navy);font-variant-numeric:lining-nums tabular-nums;margin-top:6px}
 .kpi .v small{font-size:.95rem;font-weight:400;color:var(--muted)}
 .kpi.warn .v{color:var(--danger)}
 .card{background:#fff;border:1px solid var(--line);min-width:0}
@@ -245,12 +245,12 @@ table.inline{border-collapse:collapse;width:100%;min-width:900px;background:#fff
 .hbars .tr{display:flex;align-items:center;gap:8px;min-width:0}
 .hbars .sbar{height:24px}
 .hbars .sbar span{display:grid;place-items:center;font-size:.75rem;font-weight:500;overflow:hidden;white-space:nowrap}
-.hbars .tot{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.hbars .tot{font-size:.85rem;color:var(--muted);font-variant-numeric:lining-nums tabular-nums}
 /* Barre de progression (gt_plt_bar_pct) */
 .pbar{display:flex;align-items:center;gap:8px;min-width:110px}
 .pbar .tk{flex:1;height:12px;background:#E3E5E8;border-radius:4px;overflow:hidden}
 .pbar .tk i{display:block;height:100%;background:#2E9E4F;border-radius:4px}
-.pbar b{font-weight:500;font-size:.85rem;min-width:38px;text-align:right;font-variant-numeric:tabular-nums}
+.pbar b{font-weight:500;font-size:.85rem;min-width:38px;text-align:right;font-variant-numeric:lining-nums tabular-nums}
 /* Anneau et jauges (SVG) */
 .donut{display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:center}
 .donut svg{width:190px;height:190px;flex:none}
@@ -265,7 +265,7 @@ table.gt{width:100%;border-collapse:collapse;font-size:.9rem}
 .gt thead th{background:var(--navy);color:#fff;font-weight:500;text-align:left;padding:10px 12px;border-bottom:2px solid #06155F;white-space:nowrap}
 .gt thead tr.sp th{background:#fff;color:#333;border-bottom:1px solid #999;text-align:center;font-weight:500;padding:8px 12px}
 .gt thead tr.sp th:empty{border-bottom:0}
-.gt th.n,.gt td.n{text-align:right;font-variant-numeric:tabular-nums}
+.gt th.n,.gt td.n{text-align:right;font-variant-numeric:lining-nums tabular-nums}
 .gt td{padding:9px 12px;border-bottom:1px solid #E6E6E6;vertical-align:middle}
 .gt tr.grp td{background:#242154;color:#fff;font-weight:500;padding:9px 12px}
 .gt tr.grp td small{font-weight:400;opacity:.85;margin-left:8px}
