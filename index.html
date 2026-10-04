@@ -213,34 +213,73 @@ table.inline{border-collapse:collapse;width:100%;min-width:900px;background:#fff
 .ltabs button.on{color:var(--navy);border-bottom-color:var(--navy);font-weight:500}
 .lnk{background:none;border:0;color:var(--navy);margin-top:16px;text-decoration:underline;padding:4px}
 
-/* Tableau de bord */
-.dash{max-width:1100px;margin:0 auto;padding:20px 16px 120px;display:grid;gap:16px}
+/* Tableau de bord (modèle Shiny : statistiques + synthèse façon gt) */
+.dash{max-width:1200px;margin:0 auto;padding:16px 16px 120px;display:grid;gap:16px}
+.dbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.seg{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:6px;padding:3px}
+.seg button{background:none;border:0;padding:9px 16px;border-radius:4px;color:var(--muted)}
+.seg button.on{background:var(--navy);color:#fff}
+.dbar select{border:1px solid #BFC3C9;border-radius:4px;padding:10px 12px;background:#fff;min-width:220px;max-width:100%}
 .banner{background:#FFF7E0;border:1px solid #F0D58A;padding:12px 16px;border-radius:4px}
 .banner.info{background:#EEF3FF;border-color:#C9D6FB}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-.kpi{background:#fff;border:1px solid var(--line);padding:16px}
-.kpi .v{font-size:2rem;font-weight:500;color:var(--navy);font-variant-numeric:tabular-nums}
-.kpi .l{color:var(--muted);font-size:.9rem;margin-top:4px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.kpi{background:#fff;border:1px solid var(--line);border-top:3px solid var(--navy);padding:14px 16px}
+.kpi .l{color:#333;font-size:.85rem}
+.kpi .v{font-size:1.9rem;font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums;margin-top:6px}
+.kpi .v small{font-size:.95rem;font-weight:400;color:var(--muted)}
 .kpi.warn .v{color:var(--danger)}
-.card{background:#fff;border:1px solid var(--line)}
-.card>h2{font-size:1.1rem;font-weight:600;margin:0;padding:14px 18px;border-bottom:1px solid var(--line)}
-.card .cb{padding:16px 18px}
-.big{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;flex-wrap:wrap}
-.big b{font-size:2.6rem;font-weight:500;color:var(--navy);font-variant-numeric:tabular-nums}
-.big span{color:var(--muted)}
-.sbar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:#EEF0F3;gap:2px}
-.sbar.lg{height:22px;border-radius:4px}
-.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;font-size:.9rem;color:#444}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
-.drow{display:grid;grid-template-columns:minmax(120px,1.2fr) 40px 2fr 52px;gap:12px;align-items:center;width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 18px;text-align:left}
-.drow:last-child{border-bottom:0}
-button.drow[data-go]:hover{background:var(--hover)}
-.drow.mine{background:#EEF3FF}
-.drow .dc{color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
-.drow .dp{text-align:right;font-weight:500;font-variant-numeric:tabular-nums}
-.dhead{color:var(--muted);font-size:.85rem;padding-top:8px;padding-bottom:8px}
-.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.dlist .upit{padding:12px 18px}
+.card{background:#fff;border:1px solid var(--line);min-width:0}
+.card>h2{font-size:1.05rem;font-weight:600;margin:0;padding:14px 18px 4px;color:#333}
+.card>.sub{margin:0;padding:0 18px 12px;color:var(--muted);font-size:.88rem}
+.card .cb{padding:8px 18px 18px}
+.dgrid{display:grid;grid-template-columns:1.15fr 1fr;gap:16px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.88rem;color:#333}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+/* Barres empilées (HTML) */
+.sbar{display:flex;height:14px;gap:2px;min-width:40px}
+.sbar span{height:100%;border-radius:0}
+.sbar span:first-child{border-radius:4px 0 0 4px}.sbar span:last-child{border-radius:0 4px 4px 0}.sbar span:only-child{border-radius:4px}
+.sbar.empty{background:#EEF0F3;border-radius:4px}
+.hbars{display:grid;grid-template-columns:minmax(90px,max-content) 1fr;gap:10px 14px;align-items:center}
+.hbars .nm{font-size:.92rem;text-align:right;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.hbars .tr{display:flex;align-items:center;gap:8px;min-width:0}
+.hbars .sbar{height:24px}
+.hbars .sbar span{display:grid;place-items:center;font-size:.75rem;font-weight:500;overflow:hidden;white-space:nowrap}
+.hbars .tot{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+/* Barre de progression (gt_plt_bar_pct) */
+.pbar{display:flex;align-items:center;gap:8px;min-width:110px}
+.pbar .tk{flex:1;height:12px;background:#E3E5E8;border-radius:4px;overflow:hidden}
+.pbar .tk i{display:block;height:100%;background:#2E9E4F;border-radius:4px}
+.pbar b{font-weight:500;font-size:.85rem;min-width:38px;text-align:right;font-variant-numeric:tabular-nums}
+/* Anneau et jauges (SVG) */
+.donut{display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:center}
+.donut svg{width:190px;height:190px;flex:none}
+.donut .legend{flex-direction:column;gap:8px}
+.gauge{width:76px;height:44px;display:block}
+/* Tableaux façon gt */
+.gtw{overflow-x:auto}
+table.gt{width:100%;border-collapse:collapse;font-size:.9rem}
+.gt caption{caption-side:top;text-align:center;padding:14px 12px 12px;border-bottom:2px solid #D3D3D3}
+.gt caption b{display:block;font-size:1.15rem;font-weight:600;color:#222}
+.gt caption span{display:block;color:var(--muted);font-size:.88rem;margin-top:4px}
+.gt thead th{background:var(--navy);color:#fff;font-weight:500;text-align:left;padding:10px 12px;border-bottom:2px solid #06155F;white-space:nowrap}
+.gt thead tr.sp th{background:#fff;color:#333;border-bottom:1px solid #999;text-align:center;font-weight:500;padding:8px 12px}
+.gt thead tr.sp th:empty{border-bottom:0}
+.gt th.n,.gt td.n{text-align:right;font-variant-numeric:tabular-nums}
+.gt td{padding:9px 12px;border-bottom:1px solid #E6E6E6;vertical-align:middle}
+.gt tr.grp td{background:#242154;color:#fff;font-weight:500;padding:9px 12px}
+.gt tr.grp td small{font-weight:400;opacity:.85;margin-left:8px}
+.gt tbody tr.r:hover td{background:#F5F6F8}
+.gt tbody tr.r[data-go]{cursor:pointer}
+.gt td.cont{border-top-color:transparent;color:transparent}
+.gt td.act{font-weight:500}
+.gt tr.cont-row td.act{color:transparent}
+.gt tr.r:has(+ tr.cont-row) td.act{border-bottom-color:transparent}
+.gt .st{display:inline-block;padding:4px 10px;border-radius:3px;font-size:.8rem;font-weight:500;white-space:nowrap}
+.gt td.wrap{min-width:220px}
+.gt tfoot td{padding:8px 12px;color:var(--muted);font-size:.8rem;border-top:2px solid #D3D3D3}
+.tip{position:fixed;z-index:50;pointer-events:none;background:#fff;color:#222;border:1px solid var(--line);box-shadow:0 4px 14px rgba(0,0,0,.15);border-radius:4px;padding:8px 10px;font-size:.85rem;max-width:280px;opacity:0;transition:opacity .1s}
+.tip.on{opacity:1}
 
 /* Comptes utilisateurs */
 .acct{display:grid;grid-template-columns:1.4fr 1.2fr 150px 110px;gap:12px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line)}
@@ -266,7 +305,10 @@ button.drow[data-go]:hover{background:var(--hover)}
   .fabs{right:16px;bottom:calc(90px + env(safe-area-inset-bottom,0px))}
   .calnav{gap:30px}
   .dgrid{grid-template-columns:1fr}
-  .drow{grid-template-columns:1fr 34px 46px;row-gap:8px}.drow .sbar{grid-column:1/-1;grid-row:2}
+  .hbars .nm{max-width:110px;font-size:.82rem}
+  .dbar .seg{display:flex;width:100%}.dbar .seg button{flex:1;padding:9px 6px}
+  .dbar select{width:100%;min-width:0}
+  .card .cb{padding:8px 12px 14px}
   .acct{grid-template-columns:1fr 1fr}.acct .ae{grid-column:1/-1}
   .login{margin:4vh 16px;padding:24px}
 }
@@ -310,6 +352,7 @@ button.drow[data-go]:hover{background:var(--hover)}
 </aside>
 <div class="sheet" id="sheet"><div class="box" id="sheetBox"></div></div>
 <input type="file" id="filePick" hidden>
+<div class="tip" id="tip" role="tooltip"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -381,7 +424,8 @@ const T = id => db.taches.find(t => t.id === id);
 const pNames = t => (t.partenaires || []).map(id => P(id)?.nom).filter(Boolean).join(", ");
 const match = (...s) => !q || s.join(" ").toLowerCase().includes(q.toLowerCase());
 const SLAB = {"Not Started":"Non démarrée","In Progress":"En cours","Complete":"Achevée","En attente":"En attente","Cancel":"Annulée"};
-const SCOL = {"Not Started":"#9AA3AF","In Progress":"#2D6BEE","Complete":"#1E9E6A","En attente":"#E0A100","Cancel":"#C62828"};
+const SCOL = {"Not Started":"#C0392B","In Progress":"#E8A317","Complete":"#2E9E4F","En attente":"#5B6FD6","Cancel":"#9AA3AF"};
+const STXT = {"Not Started":"#fff","In Progress":"#1b1b1b","Complete":"#fff","En attente":"#fff","Cancel":"#1b1b1b"};
 /* Droits : sans Supabase (mode local) tout est modifiable */
 const isAdmin = () => !sb || (me?.role === "admin" && me.actif);
 const myP = () => (sb && me?.actif) ? me.partenaire_id : null;
@@ -615,45 +659,95 @@ function stats(tasks){
   return {c, n:tasks.length, actives, pct: actives ? Math.round(100 * c.Complete / actives) : 0,
     late: tasks.filter(t => t.due && t.due < today && t.status !== "Complete" && t.status !== "Cancel").length};
 }
-function stackBar(st, lg){
-  const label = STATUTS.filter(s => st.c[s]).map(s => `${SLAB[s]} : ${st.c[s]}`).join(", ");
-  return `<div class="sbar ${lg ? "lg" : ""}" role="img" aria-label="${esc(label || "Aucune activité")}">` +
-    STATUTS.filter(s => st.c[s]).map(s => `<span style="flex:${st.c[s]};background:${SCOL[s]}" title="${SLAB[s]} : ${st.c[s]}"></span>`).join("") + `</div>`;
+const groupBy = (arr, key) => { const m = new Map(); for (const x of arr) { const k = key(x); if (!m.has(k)) m.set(k, []); m.get(k).push(x); } return m; };
+const byFr = (a, b) => String(a).localeCompare(String(b), "fr");
+const tipOf = st => STATUTS.filter(s => st.c[s]).map(s => `${SLAB[s]} : ${st.c[s]}`).join("<br>") || "Aucune tâche";
+const pill = s => `<span class="st" style="background:${SCOL[s] || "#999"};color:${STXT[s] || "#fff"}">${esc(SLAB[s] || s)}</span>`;
+/* Barre empilée par statut ; scale = largeur relative (0–1) pour les barres horizontales comparées */
+function stackBar(st, {labels = false, scale = 1} = {}){
+  if (!st.n) return `<div class="sbar empty" style="width:${scale*100}%"></div>`;
+  return `<div class="sbar" style="width:${Math.max(scale*100, 2)}%" data-tip="${esc(tipOf(st))}">` + STATUTS.filter(s => st.c[s]).map(s =>
+    `<span style="flex:${st.c[s]};background:${SCOL[s]};color:${STXT[s]}">${labels && st.c[s] / st.n * scale >= .06 ? st.c[s] : ""}</span>`).join("") + `</div>`;
 }
-function dashRows(items){
-  return `<div class="drow dhead"><span>Nom</span><span class="dc">Act.</span><span>Répartition par statut</span><span class="dp">Achevé</span></div>` +
-    items.map(x => `<${x.go ? `button data-go="${x.go}"` : "div"} class="drow ${x.mine ? "mine" : ""}"><span class="dn">${esc(x.label)}</span><span class="dc">${x.st.n}</span>${stackBar(x.st)}<span class="dp">${x.st.pct} %</span></${x.go ? "button" : "div"}>`).join("");
+const pbar = pct => `<div class="pbar"><div class="tk"><i style="width:${pct}%"></i></div><b>${pct} %</b></div>`;
+function gauge(pct){
+  const col = pct >= 67 ? SCOL.Complete : pct >= 34 ? SCOL["In Progress"] : SCOL["Not Started"];
+  return `<svg class="gauge" viewBox="0 0 100 58" role="img" aria-label="${pct} %"><path d="M10 52 A40 40 0 0 1 90 52" fill="none" stroke="#E3E5E8" stroke-width="11" stroke-linecap="round"/>
+    ${pct ? `<path d="M10 52 A40 40 0 0 1 90 52" fill="none" stroke="${col}" stroke-width="11" stroke-linecap="round" pathLength="100" stroke-dasharray="${pct} 100"/>` : ""}
+    <text x="50" y="50" text-anchor="middle" font-size="17" font-weight="600" fill="#222">${pct}%</text></svg>`;
 }
+function donut(st){
+  const R = 70, C = 2 * Math.PI * R, gap = st.n > 1 ? 2 : 0; let off = 0;
+  const segs = STATUTS.filter(s => st.c[s]).map(s => { const len = st.c[s] / st.n * C;
+    const el = `<circle r="${R}" cx="95" cy="95" fill="none" stroke="${SCOL[s]}" stroke-width="26" stroke-dasharray="${Math.max(len - gap, .5)} ${C}" stroke-dashoffset="${-off}" data-tip="${esc(SLAB[s])} : ${st.c[s]} (${Math.round(100*st.c[s]/st.n)} %)"/>`;
+    off += len; return el; }).join("");
+  return `<div class="donut"><svg viewBox="0 0 190 190" role="img" aria-label="${esc(tipOf(st).replace(/<br>/g, ", "))}"><g transform="rotate(-90 95 95)">${segs || `<circle r="${R}" cx="95" cy="95" fill="none" stroke="#E3E5E8" stroke-width="26"/>`}</g>
+    <text x="95" y="92" text-anchor="middle" font-size="30" font-weight="600" fill="#222">${st.n}</text><text x="95" y="114" text-anchor="middle" font-size="13" fill="#555">tâches</text></svg>
+    <div class="legend">${STATUTS.map(s => `<span><i style="background:${SCOL[s]}"></i>${SLAB[s]} : <b>${st.c[s] || 0}</b> <span style="color:var(--muted)">(${st.n ? Math.round(100*(st.c[s]||0)/st.n) : 0} %)</span></span>`).join("")}</div></div>`;
+}
+let dash = {tab:"stats", p:""};
 views.dashboard = () => {
   chrome({title:"Tableau de bord", acts:["refresh"], nav:"dashboard"});
-  const all = stats(db.taches), mineId = myP(), today = iso(new Date()), in30 = iso(new Date(Date.now() + 30*864e5));
-  const open = t => t.status !== "Complete" && t.status !== "Cancel";
+  $("#tip").classList.remove("on");
+  if (dash.p && !P(dash.p)) dash.p = "";
+  const tasks = dash.p ? db.taches.filter(t => (t.partenaires || []).includes(dash.p)) : db.taches;
+  const mineId = myP();
   let banner = "";
   if (sb && me && !me.actif) banner = `<div class="banner">Votre compte est en attente de validation par l'administrateur. Vous pouvez consulter le tableau de bord, mais pas encore modifier les activités.</div>`;
   else if (mineId && !isAdmin()) banner = `<div class="banner info">Connecté pour <b>${esc(P(mineId)?.nom || "votre structure")}</b> : vous pouvez mettre à jour les activités de votre structure.</div>`;
   else if (sb && me && !me.partenaire_id && me.role !== "admin") banner = `<div class="banner">Votre compte n'est rattaché à aucune structure. Contactez l'administrateur.</div>`;
-  const kpi = (v, l, cls = "") => `<div class="kpi ${cls}"><div class="v">${v}</div><div class="l">${l}</div></div>`;
-  const byP = db.partenaires.map(p => ({label:p.nom, go:"#/partenaire/" + p.id, mine:p.id === mineId, st:stats(db.taches.filter(t => (t.partenaires || []).includes(p.id)))}))
-    .filter(x => x.st.n).sort((a, b) => b.mine - a.mine || b.st.pct - a.st.pct || b.st.n - a.st.n || a.label.localeCompare(b.label, "fr"));
-  const piliers = [...new Set(db.taches.map(t => t.pilier || ""))].map(pl => ({label:pl || "Non rattaché", st:stats(db.taches.filter(t => (t.pilier || "") === pl))}))
-    .sort((a, b) => b.st.n - a.st.n);
-  const late = db.taches.filter(t => t.due && t.due < today && open(t)).sort((a, b) => a.due.localeCompare(b.due));
-  const soon = db.taches.filter(t => t.due && t.due >= today && t.due <= in30 && open(t)).sort((a, b) => a.due.localeCompare(b.due));
-  const tlist = (arr, empty) => arr.length ? arr.slice(0, 12).map(t => `<div class="upit" data-go="#/tache/${t.id}"><div class="r1"><span>${esc(t.task)}</span><small>${fmtD(t.due)}</small></div><div class="p">${esc(pNames(t))} · ${esc(SLAB[t.status] || t.status)}</div></div>`).join("") + (arr.length > 12 ? `<div class="upit" style="color:var(--muted)">… et ${arr.length - 12} autre(s)</div>` : "") : `<div class="cb" style="color:var(--muted)">${empty}</div>`;
-  $("#main").innerHTML = `<div class="dash">${banner}
-    <div class="kpis">${kpi(all.n, "Activités suivies")}${kpi(all.c["Complete"], "Achevées")}${kpi(all.c["In Progress"], "En cours")}${kpi(all.c["Not Started"], "Non démarrées")}${kpi(all.c["En attente"], "En attente")}${kpi(all.late, "En retard", all.late ? "warn" : "")}</div>
-    <section class="card"><h2>État d'avancement global</h2><div class="cb">
-      <div class="big"><b>${all.pct} %</b><span>des activités achevées (${all.c.Complete} sur ${all.actives}, hors activités annulées)</span></div>
-      ${stackBar(all, true)}
-      <div class="legend">${STATUTS.map(s => `<span><i style="background:${SCOL[s]}"></i>${SLAB[s]} : ${all.c[s] || 0}</span>`).join("")}</div>
-    </div></section>
-    <section class="card"><h2>Avancement par partenaire</h2>${byP.length ? dashRows(byP) : `<div class="cb">Aucune activité.</div>`}</section>
-    <section class="card"><h2>Avancement par pilier PNDS</h2>${dashRows(piliers)}</section>
-    <div class="dgrid">
-      <section class="card dlist"><h2>En retard (${late.length})</h2>${tlist(late, "Aucune activité en retard.")}</section>
-      <section class="card dlist"><h2>Échéances des 30 prochains jours (${soon.length})</h2>${tlist(soon, "Aucune échéance proche.")}</section>
-    </div></div>`;
+  const bar = `<div class="dbar"><div class="seg" role="tablist"><button role="tab" data-dtab="stats" class="${dash.tab === "stats" ? "on" : ""}">Statistiques</button><button role="tab" data-dtab="synth" class="${dash.tab === "synth" ? "on" : ""}">Synthèse des activités</button></div>
+    <select id="dashP" aria-label="Filtrer par partenaire"><option value="">Tous les partenaires</option>${db.partenaires.map(p => `<option value="${p.id}" ${p.id === dash.p ? "selected" : ""}>${esc(p.nom)}${p.id === mineId ? " (ma structure)" : ""}</option>`).join("")}</select></div>`;
+  $("#main").innerHTML = `<div class="dash">${bar}${banner}${dash.tab === "stats" ? dashStats(tasks) : dashSynth(tasks)}</div>`;
 };
+function dashStats(tasks){
+  const all = stats(tasks);
+  // Activités et piliers « finalisés » : toutes leurs tâches (hors annulées) sont achevées
+  const acts = [...groupBy(tasks, t => (t.pilier || "Non rattaché") + "\u0000" + (t.activite || "(sans activité)"))]
+    .map(([k, ts]) => { const [pilier, nom] = k.split("\u0000"); return {nom, ts, st:stats(ts), pilier}; });
+  const actFin = a => a.st.actives > 0 && a.st.c.Complete === a.st.actives;
+  const pil = [...groupBy(acts, a => a.pilier)].map(([nom, as]) => ({nom, as, nb:as.length, fin:as.filter(actFin).length}))
+    .map(x => ({...x, pct: x.nb ? Math.round(100 * x.fin / x.nb) : 0, st:stats(x.as.flatMap(a => a.ts))})).sort((a, b) => b.pct - a.pct || b.st.n - a.st.n);
+  const nActFin = acts.filter(actFin).length, nPilFin = pil.filter(x => x.nb && x.fin === x.nb).length;
+  const kpi = (l, v, sub = "", cls = "") => `<div class="kpi ${cls}"><div class="l">${l}</div><div class="v">${v}${sub ? ` <small>${sub}</small>` : ""}</div></div>`;
+  const parts = db.partenaires.map(p => ({p, st:stats(tasks.filter(t => (t.partenaires || []).includes(p.id)))})).filter(x => x.st.n).sort((a, b) => b.st.n - a.st.n || byFr(a.p.nom, b.p.nom));
+  const max = Math.max(1, ...parts.map(x => x.st.n));
+  const pilTable = `<div class="gtw"><table class="gt"><thead><tr><th>Pilier PNDS</th><th class="n">Activités</th><th class="n">Finalisées</th><th style="text-align:center">Progression</th></tr></thead><tbody>` +
+    pil.map(x => `<tr class="r"><td>${esc(x.nom)}</td><td class="n">${x.nb}</td><td class="n">${x.fin}</td><td style="text-align:center">${gauge(x.pct)}</td></tr>`).join("") + `</tbody></table></div>`;
+  const actGroups = [...groupBy([...acts].sort((a, b) => byFr(a.pilier, b.pilier) || b.st.pct - a.st.pct || byFr(a.nom, b.nom)), a => a.pilier)];
+  const implTable = `<div class="gtw"><table class="gt"><caption><b>État de mise en œuvre des activités</b><span>Nombre de tâches, part des tâches achevées et répartition des statuts pour chaque activité</span></caption>
+    <thead><tr class="sp"><th></th><th></th><th></th><th>Répartition des statuts</th><th></th></tr><tr><th>Activité</th><th class="n">Nombre total de tâches</th><th class="n">% tâches achevées</th><th style="min-width:180px">${STATUTS.map(s => `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:10px;font-size:.78rem;font-weight:400"><i style="width:9px;height:9px;border-radius:2px;background:${SCOL[s]};display:inline-block"></i>${SLAB[s]}</span>`).join("")}</th><th style="min-width:150px">Progression des tâches achevées</th></tr></thead><tbody>` +
+    actGroups.map(([pl, as]) => `<tr class="grp"><td colspan="5">${esc(pl)}<small>${as.length} activité(s)</small></td></tr>` + as.map(a =>
+      `<tr class="r"><td>${esc(a.nom)}</td><td class="n">${a.st.n}</td><td class="n">${a.st.pct} %</td><td>${stackBar(a.st)}</td><td>${pbar(a.st.pct)}</td></tr>`).join("")).join("") +
+    `</tbody><tfoot><tr><td colspan="5">% calculé hors tâches annulées. Survolez une barre pour le détail.</td></tr></tfoot></table></div>`;
+  return `<div class="kpis">${kpi("Tâches suivies", all.n)}${kpi("Tâches achevées", all.c.Complete, `/ ${all.actives} · ${all.pct} %`)}${kpi("Activités finalisées", nActFin, `/ ${acts.length}`)}${kpi("Piliers finalisés", nPilFin, `/ ${pil.length}`)}${kpi("Tâches en retard", all.late, "", all.late ? "warn" : "")}</div>
+    <div class="dgrid">
+      <section class="card"><h2>Activités finalisées par pilier PNDS</h2><p class="sub">Une activité est finalisée quand toutes ses tâches (hors annulées) sont achevées.</p><div class="cb">${pil.length ? pilTable : "Aucune activité."}</div></section>
+      <section class="card"><h2>Répartition des tâches par statut</h2><p class="sub">${dash.p ? esc(P(dash.p)?.nom || "") : "Ensemble des partenaires"}</p><div class="cb">${donut(all)}</div></section>
+    </div>
+    <section class="card"><h2>Répartition des tâches des partenaires par statut</h2><p class="sub">Nombre de tâches par partenaire (une tâche partagée compte pour chacun de ses partenaires)</p>
+      <div class="cb"><div class="legend" style="margin-bottom:14px">${STATUTS.map(s => `<span><i style="background:${SCOL[s]}"></i>${SLAB[s]}</span>`).join("")}</div>
+      ${parts.length ? `<div class="hbars">${parts.map(x => `<button class="nm" data-go="#/partenaire/${x.p.id}" style="background:none;border:0;padding:0;cursor:pointer" title="${esc(x.p.nom)}">${esc(x.p.nom)}</button><div class="tr">${stackBar(x.st, {labels:true, scale:x.st.n / max})}<span class="tot">${x.st.n}</span></div>`).join("")}</div>` : "Aucune tâche."}</div></section>
+    <section class="card">${acts.length ? implTable : `<div class="cb">Aucune activité.</div>`}</section>`;
+}
+function dashSynth(tasks){
+  const rows = [...tasks].sort((a, b) => byFr(a.pilier || "~", b.pilier || "~") || byFr(a.activite, b.activite) || STATUTS.indexOf(a.status) - STATUTS.indexOf(b.status));
+  const groups = [...groupBy(rows, t => t.pilier || "Non rattaché")];
+  return `<section class="card"><div class="gtw"><table class="gt"><caption><b>Plan des partenaires SNIS</b><span>État détaillé de la mise en œuvre, par pilier PNDS et par activité${dash.p ? ` · ${esc(P(dash.p)?.nom || "")}` : ""}</span></caption>
+    <thead><tr><th>Activité</th><th>Tâche</th><th>Partenaire(s)</th><th>Direction</th><th>Échéance</th><th>Statut</th></tr></thead><tbody>` +
+    (groups.length ? groups.map(([pl, ts]) => { let last = null; const st = stats(ts);
+      return `<tr class="grp"><td colspan="6">${esc(pl)}<small>${ts.length} tâche(s) · ${st.pct} % achevées</small></td></tr>` + ts.map(t => { const cont = t.activite === last; last = t.activite;
+        return `<tr class="r ${cont ? "cont-row" : ""}" data-go="#/tache/${t.id}"><td class="act">${esc(t.activite)}</td><td class="wrap">${esc(t.task)}</td><td>${esc(pNames(t))}</td><td>${esc(t.direction || "")}</td><td style="white-space:nowrap">${fmtD(t.due)}</td><td>${pill(t.status)}</td></tr>`; }).join(""); }).join("")
+      : `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px">Aucune tâche.</td></tr>`) +
+    `</tbody><tfoot><tr><td colspan="6">${tasks.length} tâche(s). Cliquez sur une ligne pour ouvrir la tâche.</td></tr></tfoot></table></div></section>`;
+}
+/* Info-bulle au survol des graphiques */
+document.addEventListener("scroll", () => $("#tip").classList.remove("on"), true);
+document.addEventListener("mouseover", e => { const el = e.target.closest("[data-tip]"), tip = $("#tip");
+  if (!el) return tip.classList.remove("on"); tip.innerHTML = el.dataset.tip; tip.classList.add("on"); });
+document.addEventListener("mousemove", e => { const tip = $("#tip"); if (!tip.classList.contains("on")) return;
+  const x = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8), y = e.clientY + 16 + tip.offsetHeight > innerHeight ? e.clientY - tip.offsetHeight - 10 : e.clientY + 16;
+  tip.style.left = x + "px"; tip.style.top = y + "px"; });
 
 /* ================= Comptes utilisateurs (administrateur) ================= */
 views.comptes = async () => {
@@ -814,6 +908,7 @@ document.addEventListener("click", async e => {
   const selc = e.target.closest("[data-sel]");
   if (selc) { selTask = selc.dataset.sel; if (matchMedia("(max-width:900px)").matches) return go("#/tache/" + selTask); return views.tracker(); }
   if (g) return go(g.dataset.go);
+  const dt = e.target.closest("[data-dtab]"); if (dt) { dash.tab = dt.dataset.dtab; return views.dashboard(); }
   const cm = e.target.closest("[data-cmode]"); if (cm) { cal.mode = cm.dataset.cmode; return views.calendar(); }
   const cn = e.target.closest("[data-cnav]"); if (cn) { const k = +cn.dataset.cnav; if (!k) cal.d = new Date(); else { const d = new Date(cal.d); if (cal.mode==="month") d.setMonth(d.getMonth()+k, 1); else d.setDate(d.getDate() + k*(cal.mode==="week"?7:1)); cal.d = d; } return views.calendar(); }
   const fab = e.target.closest("[data-fab]");
@@ -844,6 +939,7 @@ document.addEventListener("click", async e => {
   }
 });
 document.addEventListener("change", async e => {
+  if (e.target.id === "dashP") { dash.p = e.target.value; return views.dashboard(); }
   const af = e.target.closest("[data-f]"); if (af && af.closest(".acct")) return saveAccount(af);
   const d = e.target.closest("[data-due]");
   if (d) { const t = T(d.dataset.due); if (t && canEditTask(t)) { await Store.save("taches", {...t, due:d.value || null}); toast("Échéance enregistrée"); } }
