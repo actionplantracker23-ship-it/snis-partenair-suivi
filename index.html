@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#081C7E">
+<meta name="theme-color" content="#00873E">
 <title>Plan des partenaires SNIS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +21,7 @@ window.APP_CONFIG = {
 </script>
 <style>
 :root{
-  --navy:#081C7E; --navy-dark:#06155F; --bg:#F7F8FA; --card:#FFFFFF; --line:#E2E5EA; --text:#212529; --muted:#6B7280;
+  --navy:#00873E; --navy-dark:#006B31; --flag-red:#D61F26; --flag-yellow:#FCD116; --bg:#F7F8FA; --card:#FFFFFF; --line:#E2E5EA; --text:#212529; --muted:#6B7280;
   --teal:#00CEC0; --hover:#F1F3F6; --danger:#C62828;
   box-sizing:border-box;
 }
@@ -33,7 +33,7 @@ html,body{height:100%;margin:0}
 body{font-family:"EB Garamond",Garamond,"Times New Roman",serif;font-variant-numeric:lining-nums;background:var(--bg);color:var(--text);font-size:18px;display:flex;flex-direction:column;overflow:hidden}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:2px solid #4C6FFF;outline-offset:2px}
+:focus-visible{outline:2px solid #E6A700;outline-offset:2px}
 svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
 /* Barre du haut */
@@ -54,7 +54,7 @@ main{flex:1;overflow:auto;position:relative}
 nav.bottom{background:var(--navy);display:grid;grid-auto-flow:column;grid-auto-columns:1fr;flex:none;padding-bottom:env(safe-area-inset-bottom,0px)}
 nav.bottom a{color:#fff;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px 10px;font-size:.95rem;position:relative;opacity:.95}
 nav.bottom a.on{font-weight:500}
-nav.bottom a.on::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:56px;height:4px;background:#fff;border-radius:3px 3px 0 0}
+nav.bottom a.on::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:56px;height:4px;background:var(--flag-yellow);border-radius:3px 3px 0 0}
 .formbar{background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center;gap:18vw;padding:16px 0 calc(16px + env(safe-area-inset-bottom,0px));flex:none}
 .formbar button{background:none;border:0;font-size:1.15rem;padding:6px 18px}
 .formbar .save{color:var(--navy);font-weight:600}
@@ -96,7 +96,7 @@ nav.bottom a.on::after{content:"";position:absolute;bottom:0;left:50%;transform:
 .stat-icon span{width:46px;height:46px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center}
 .datein{border:1px solid #ccc;border-radius:4px;padding:12px 14px;font-size:1.3rem;width:100%;margin-top:4px}
 .note{display:flex;gap:16px;padding:14px 20px;border-top:1px solid var(--line);align-items:flex-start}
-.note svg.i{width:38px;height:38px;color:#2D6BEE}
+.note svg.i{width:38px;height:38px;color:var(--navy)}
 .note .d{color:var(--muted);font-size:.9rem}
 .note .x{margin-top:4px;white-space:pre-wrap}
 
@@ -221,9 +221,9 @@ table.inline{border-collapse:collapse;width:100%;min-width:900px;background:#fff
 .seg button.on{background:var(--navy);color:#fff}
 .dbar select{border:1px solid #BFC3C9;border-radius:4px;padding:10px 12px;background:#fff;min-width:220px;max-width:100%}
 .banner{background:#FFF7E0;border:1px solid #F0D58A;padding:12px 16px;border-radius:4px}
-.banner.info{background:#EEF3FF;border-color:#C9D6FB}
+.banner.info{background:#EAF6EE;border-color:#B9E0C6}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
-.kpi{background:#fff;border:1px solid var(--line);border-top:3px solid var(--navy);padding:14px 16px}
+.kpi{background:#fff;border:1px solid var(--line);border-top:3px solid var(--flag-yellow);padding:14px 16px}
 .kpi .l{color:#333;font-size:.85rem}
 .kpi .v{font-size:1.9rem;font-weight:600;color:var(--navy);font-variant-numeric:lining-nums tabular-nums;margin-top:6px}
 .kpi .v small{font-size:.95rem;font-weight:400;color:var(--muted)}
@@ -249,7 +249,7 @@ table.inline{border-collapse:collapse;width:100%;min-width:900px;background:#fff
 /* Barre de progression (gt_plt_bar_pct) */
 .pbar{display:flex;align-items:center;gap:8px;min-width:110px}
 .pbar .tk{flex:1;height:12px;background:#E3E5E8;border-radius:4px;overflow:hidden}
-.pbar .tk i{display:block;height:100%;background:#2E9E4F;border-radius:4px}
+.pbar .tk i{display:block;height:100%;background:#009E49;border-radius:4px}
 .pbar b{font-weight:500;font-size:.85rem;min-width:38px;text-align:right;font-variant-numeric:lining-nums tabular-nums}
 /* Anneau et jauges (SVG) */
 .donut{display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:center}
@@ -262,12 +262,12 @@ table.gt{width:100%;border-collapse:collapse;font-size:.9rem}
 .gt caption{caption-side:top;text-align:center;padding:14px 12px 12px;border-bottom:2px solid #D3D3D3}
 .gt caption b{display:block;font-size:1.15rem;font-weight:600;color:#222}
 .gt caption span{display:block;color:var(--muted);font-size:.88rem;margin-top:4px}
-.gt thead th{background:var(--navy);color:#fff;font-weight:500;text-align:left;padding:10px 12px;border-bottom:2px solid #06155F;white-space:nowrap}
+.gt thead th{background:var(--navy);color:#fff;font-weight:500;text-align:left;padding:10px 12px;border-bottom:2px solid var(--navy-dark);white-space:nowrap}
 .gt thead tr.sp th{background:#fff;color:#333;border-bottom:1px solid #999;text-align:center;font-weight:500;padding:8px 12px}
 .gt thead tr.sp th:empty{border-bottom:0}
 .gt th.n,.gt td.n{text-align:right;font-variant-numeric:lining-nums tabular-nums}
 .gt td{padding:9px 12px;border-bottom:1px solid #E6E6E6;vertical-align:middle}
-.gt tr.grp td{background:#242154;color:#fff;font-weight:500;padding:9px 12px}
+.gt tr.grp td{background:var(--flag-red);color:#fff;font-weight:500;padding:9px 12px}
 .gt tr.grp td small{font-weight:400;opacity:.85;margin-left:8px}
 .gt tbody tr.r:hover td{background:#F5F6F8}
 .gt tbody tr.r[data-go]{cursor:pointer}
@@ -424,7 +424,7 @@ const T = id => db.taches.find(t => t.id === id);
 const pNames = t => (t.partenaires || []).map(id => P(id)?.nom).filter(Boolean).join(", ");
 const match = (...s) => !q || s.join(" ").toLowerCase().includes(q.toLowerCase());
 const SLAB = {"Not Started":"Non démarrée","In Progress":"En cours","Complete":"Achevée","En attente":"En attente","Cancel":"Annulée"};
-const SCOL = {"Not Started":"#C0392B","In Progress":"#E8A317","Complete":"#2E9E4F","En attente":"#5B6FD6","Cancel":"#9AA3AF"};
+const SCOL = {"Not Started":"#EF2B2D","In Progress":"#E6A700","Complete":"#009E49","En attente":"#4F6BD8","Cancel":"#8E8E8E"};
 const STXT = {"Not Started":"#fff","In Progress":"#1b1b1b","Complete":"#fff","En attente":"#fff","Cancel":"#1b1b1b"};
 /* Droits : sans Supabase (mode local) tout est modifiable */
 const isAdmin = () => !sb || (me?.role === "admin" && me.actif);
