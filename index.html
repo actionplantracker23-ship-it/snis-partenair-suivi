@@ -304,6 +304,7 @@ button.drow[data-go]:hover{background:var(--hover)}
   <hr>
   <a href="#/about"><svg class="i"><use href="#i-info"/></svg>About</a>
   <button class="mi" id="shareBtn"><svg class="i"><use href="#i-share"/></svg>Share</button>
+  <button class="mi" id="pwBtn" hidden><svg class="i"><use href="#i-key"/></svg>Changer mon mot de passe</button>
   <button class="mi" id="exportBtn"><svg class="i"><use href="#i-down"/></svg>Exporter (CSV)</button>
   <div class="ft"><div class="user"><span class="av" id="uAv">L</span><span id="uMail">Mode local (ce navigateur)</span></div><button class="logout" id="logout" hidden>Log Out</button></div>
 </aside>
@@ -858,6 +859,19 @@ $("#exportBtn").onclick = () => {
   const csv = "\ufeff" + [cols.map(x=>x[0]).join(";"), ...db.taches.map(t => cols.map(x => c(x[1](t))).join(";"))].join("\r\n");
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"})); a.download = `tracker_partenaires_snis_${iso(new Date())}.csv`; document.body.appendChild(a); a.click(); a.remove();
 };
+$("#pwBtn").onclick = () => {
+  closeDrawer();
+  openForm("Changer mon mot de passe",
+    formRow("Nouveau mot de passe", `<input type="password" name="p1" autocomplete="new-password" placeholder="8 caractères minimum">`, true) +
+    formRow("Confirmation", `<input type="password" name="p2" autocomplete="new-password">`, true),
+    async f => {
+      if (f.p1.value.length < 8) return toast("Le mot de passe doit contenir au moins 8 caractères.");
+      if (f.p1.value !== f.p2.value) return toast("Les deux mots de passe ne correspondent pas.");
+      const { error } = await sb.auth.updateUser({ password: f.p1.value });
+      if (error) return toast(authErr(error));
+      toast("Mot de passe modifié"); go("#/dashboard", true);
+    }, "#/dashboard");
+};
 $("#logout").onclick = async () => { closeDrawer(); await sb.auth.signOut(); };
 
 /* ================= Démarrage ================= */
@@ -960,7 +974,7 @@ function applyAccess(){
   if (!sb) return;
   const role = me?.role === "admin" ? "Administrateur" : me?.partenaire_id ? (P(me.partenaire_id)?.nom || "Structure") + (me.actif ? "" : " (en attente de validation)") : "Aucune structure";
   $("#uMail").innerHTML = `${esc(session.user.email)}<br><small>${esc(role)}</small>`;
-  $("#uAv").textContent = (session.user.email || "?")[0].toUpperCase(); $("#logout").hidden = false;
+  $("#uAv").textContent = (session.user.email || "?")[0].toUpperCase(); $("#logout").hidden = false; $("#pwBtn").hidden = false;
 }
 async function boot(){
   $("#dLogo").innerHTML = $(".appbar .applogo").innerHTML; $("#dName").textContent = APPN(); document.title = APPN();
