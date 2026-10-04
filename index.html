@@ -715,8 +715,11 @@ function loginScreen(){
     <input id="loginMail" type="email" placeholder="nom@exemple.org" autocomplete="email"><button class="btnp" id="loginBtn">Recevoir le lien</button><p id="loginMsg" style="color:var(--muted);min-height:1.5em"></p></div>`;
   $("#loginBtn").onclick = async () => {
     const email = $("#loginMail").value.trim(); if (!email) return;
+    const btn = $("#loginBtn"); if (btn.disabled) return;
+    btn.disabled = true; $("#loginMsg").textContent = "Envoi en cours…";
     const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: location.href.split("#")[0] } });
-    $("#loginMsg").textContent = error ? "Échec : " + error.message : "Lien envoyé. Ouvrez votre messagerie et cliquez sur le lien.";
+    $("#loginMsg").textContent = error ? (error.status === 429 ? "Trop de demandes : patientez une minute avant de redemander un lien." : "Échec : " + error.message) : "Lien envoyé. Ouvrez votre messagerie et cliquez sur le lien.";
+    setTimeout(() => { btn.disabled = false; }, error ? 5000 : 60000);
   };
 }
 async function boot(){
