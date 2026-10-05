@@ -770,9 +770,27 @@ views.comptes = async () => {
       <div class="ae"><div class="t">${esc(u.email)}</div><div class="s ${u.actif ? "" : "pend"}">${u.actif ? "Validé" : "En attente de validation"} · inscrit le ${esc(new Date(u.created_at).toLocaleDateString("fr-FR"))}</div></div>
       <select data-f="partenaire_id" aria-label="Structure"><option value="">— Aucune structure —</option>${db.partenaires.map(p => `<option value="${p.id}" ${p.id === u.partenaire_id ? "selected" : ""}>${esc(p.nom)}</option>`).join("")}</select>
       <select data-f="role" aria-label="Rôle"><option value="partenaire" ${u.role === "partenaire" ? "selected" : ""}>Structure</option><option value="admin" ${u.role === "admin" ? "selected" : ""}>Administrateur</option></select>
-      <label><input type="checkbox" data-f="actif" ${u.actif ? "checked" : ""}> Validé</label>
+      <div style="display:flex;flex-direction:column;gap:6px"><label><input type="checkbox" data-f="actif" ${u.actif ? "checked" : ""}> Validé</label>
+      <button class="lnk" style="margin:0;padding:0;text-align:left;font-size:.85rem" data-pwd="${u.user_id}" data-mail="${esc(u.email)}">Nouveau mot de passe</button></div>
     </div>`).join("") + `</div>`;
+  $("#main").querySelectorAll("[data-pwd]").forEach(bt => bt.onclick = () => adminPassword(bt.dataset.pwd, bt.dataset.mail));
 };
+function adminPassword(uid, mail){
+  openForm("Nouveau mot de passe",
+    `<p style="margin:0 0 20px;color:var(--muted)">Compte : <b>${esc(mail)}</b>. Communiquez ce mot de passe provisoire à la personne ; elle pourra le changer dans le menu ☰ → « Changer mon mot de passe ».</p>` +
+    formRow("Mot de passe provisoire", `<input name="p1" autocomplete="off" value="${esc(tempPassword())}">`, true),
+    async f => {
+      const pass = f.p1.value.trim();
+      if (pass.length < 8) return toast("Le mot de passe doit contenir au moins 8 caractères.");
+      try { await callFn("admin-comptes", { action: "mot_de_passe", user_id: uid, password: pass }); }
+      catch (e) { return toast(e.message); }
+      toast("Mot de passe enregistré pour " + mail); go("#/comptes", true);
+    }, "#/comptes");
+}
+function tempPassword(){
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789", a = new Uint32Array(10);
+  crypto.getRandomValues(a); return "Snis-" + [...a].map(n => chars[n % chars.length]).join("");
+}
 async function saveAccount(el){
   const row = el.closest("[data-uid]"), uid = row.dataset.uid, f = el.dataset.f;
   const val = f === "actif" ? el.checked : (el.value || null);
@@ -995,6 +1013,16 @@ function authErr(error){
   if (/Password should be/i.test(error.message)) return "Mot de passe trop faible : au moins 8 caractères.";
   return "Échec : " + error.message;
 }
+/* Appel d'une fonction serveur Supabase ; renvoie un message d'erreur lisible */
+async function callFn(name, body){
+  let res;
+  try { res = await sb.functions.invoke(name, { body }); }
+  catch (e) { throw new Error("Connexion au serveur impossible : vérifiez votre connexion internet."); }
+  if (!res.error) return res.data || {};
+  let msg = "Le serveur ne répond pas pour le moment : réessayez dans un instant.";
+  try { const j = await res.error.context.json(); if (j && j.error) msg = j.error; } catch (e) {}
+  throw new Error(msg);
+}
 async function loadStructures(){
   if (!structures) { const { data, error } = await sb.rpc("liste_structures"); structures = error ? [] : data; }
   return structures;
@@ -1017,9 +1045,13 @@ async function loginScreen(mode = "login"){
       <input id="lPass" type="password" placeholder="Mot de passe (8 caractères minimum)" aria-label="Mot de passe" autocomplete="new-password">
       <input id="lPass2" type="password" placeholder="Confirmez le mot de passe" aria-label="Confirmation du mot de passe" autocomplete="new-password">
       <button class="btnp" id="lGo">Créer le compte</button></form>`);
-  else authShell(`<p style="color:var(--muted);margin:18px 0 0">Saisissez votre adresse email : vous recevrez un lien pour choisir un nouveau mot de passe.</p>
-      <form class="lf" onsubmit="return false">${mail}<button class="btnp" id="lGo">Recevoir le lien</button></form><button class="lnk" data-lmode="login">Retour à la connexion</button>`);
+  else authShell(`<div style="text-align:left;margin-top:20px"><p style="font-weight:600;margin:0 0 10px">Mot de passe oublié</p>
+      <ol style="padding-left:20px;margin:0;line-height:1.6"><li>Contactez l'administrateur de la plateforme.</li>
+      <li>Il vous attribue un mot de passe provisoire depuis « Comptes utilisateurs ».</li>
+      <li>Connectez-vous, puis choisissez votre propre mot de passe dans le menu ☰ → « Changer mon mot de passe ».</li></ol></div>
+      <button class="btnp" data-lmode="login" style="margin-top:20px">Retour à la connexion</button>`);
   $("#main").querySelectorAll("[data-lmode]").forEach(b => b.onclick = () => loginScreen(b.dataset.lmode));
+  if (mode === "forgot") return;
   $("#lGo").onclick = async () => {
     const btn = $("#lGo"); if (btn.disabled) return;
     const email = $("#lMail").value.trim(), pass = $("#lPass")?.value || "", struct = $("#lStruct")?.value;
@@ -1031,21 +1063,14 @@ async function loginScreen(mode = "login"){
     btn.disabled = true; lmsg("Veuillez patienter…");
     let keepDisabled = false;
     try {
-      if (mode === "forgot") {
-        const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: baseUrl() });
-        if (error && error.status === 429) return lmsg("Un email a déjà été envoyé récemment. Vérifiez votre boîte de réception et le dossier « spam », ou réessayez dans une heure.", true);
-        if (!error) keepDisabled = true;
-        return error ? lmsg(authErr(error), true) : lmsg("Si un compte existe pour cette adresse, un email vient de vous être envoyé.");
-      }
       if (mode === "signup") {
-        authBusy = true;
-        const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { partenaire_id: struct }, emailRedirectTo: baseUrl() } });
-        authBusy = false;
-        if (error && error.status === 429) { keepDisabled = true; return signupDone(email, true); }
-        if (error) return lmsg(authErr(error), true);
-        if (data.user && data.user.identities && !data.user.identities.length) return lmsg("Un compte existe déjà pour cette adresse. Connectez-vous ou utilisez « Mot de passe oublié ».", true);
-        if (data.session) { session = data.session; return boot(); }
-        keepDisabled = true; return signupDone(email, false);
+        try { await callFn("inscription", { email, password: pass, partenaire_id: struct }); }
+        catch (e) { return lmsg(e.message, true); }
+        keepDisabled = true; authBusy = true;
+        const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+        if (error) { authBusy = false; return signupDone(email); }
+        session = data.session; await loadMe(); authBusy = false;
+        toast("Compte créé : en attente de validation par l'administrateur"); return boot();
       }
       authBusy = true;
       const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
@@ -1060,15 +1085,13 @@ async function loginScreen(mode = "login"){
     } finally { if (!keepDisabled) btn.disabled = false; }
   };
 }
-function signupDone(email, maybe){
+function signupDone(email){
   authShell(`<div style="text-align:left;margin-top:20px">
-    <p style="font-weight:600;margin:0 0 10px">${maybe ? "Votre demande d'inscription a déjà été enregistrée." : "Votre compte a été créé."}</p>
+    <p style="font-weight:600;margin:0 0 10px">Votre compte a été créé.</p>
     <ol style="padding-left:20px;margin:0;line-height:1.6">
-      <li>Ouvrez l'email envoyé à <b>${esc(email)}</b> (pensez au dossier « spam ») et cliquez sur le lien de confirmation.</li>
-      <li>Revenez sur cette page et connectez-vous avec votre structure, votre email et votre mot de passe.</li>
+      <li>Connectez-vous avec votre structure, l'adresse <b>${esc(email)}</b> et votre mot de passe.</li>
       <li>L'administrateur valide ensuite votre compte pour que vous puissiez mettre à jour vos activités.</li>
-    </ol>
-    <p style="color:var(--muted);margin:14px 0 0">Inutile de recommencer l'inscription : chaque nouvel essai renvoie un email et peut être bloqué temporairement.</p></div>
+    </ol></div>
     <button class="btnp" id="lBack" style="margin-top:20px">Aller à la connexion</button>`);
   $("#lBack").onclick = () => loginScreen("login");
 }
