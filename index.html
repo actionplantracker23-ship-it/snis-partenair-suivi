@@ -1029,23 +1029,27 @@ async function loginScreen(mode = "login"){
     if (mode === "signup" && pass.length < 8) return lmsg("Le mot de passe doit contenir au moins 8 caractères.", true);
     if (mode === "signup" && pass !== $("#lPass2").value) return lmsg("Les deux mots de passe ne correspondent pas.", true);
     btn.disabled = true; lmsg("Veuillez patienter…");
+    let keepDisabled = false;
     try {
       if (mode === "forgot") {
         const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: baseUrl() });
+        if (error && error.status === 429) return lmsg("Un email a déjà été envoyé récemment. Vérifiez votre boîte de réception et le dossier « spam », ou réessayez dans une heure.", true);
+        if (!error) keepDisabled = true;
         return error ? lmsg(authErr(error), true) : lmsg("Si un compte existe pour cette adresse, un email vient de vous être envoyé.");
       }
       if (mode === "signup") {
         authBusy = true;
         const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { partenaire_id: struct }, emailRedirectTo: baseUrl() } });
         authBusy = false;
+        if (error && error.status === 429) { keepDisabled = true; return signupDone(email, true); }
         if (error) return lmsg(authErr(error), true);
         if (data.user && data.user.identities && !data.user.identities.length) return lmsg("Un compte existe déjà pour cette adresse. Connectez-vous ou utilisez « Mot de passe oublié ».", true);
         if (data.session) { session = data.session; return boot(); }
-        return lmsg("Compte créé. Ouvrez l'email de confirmation que vous venez de recevoir, puis connectez-vous. L'administrateur validera ensuite votre compte.");
+        keepDisabled = true; return signupDone(email, false);
       }
       authBusy = true;
       const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
-      if (error) { authBusy = false; return lmsg(authErr(error), true); }
+      if (error) { authBusy = false; return lmsg(error.status === 429 ? "Trop de tentatives de connexion : patientez une minute, puis réessayez une seule fois." : authErr(error), true); }
       session = data.session; await loadMe();
       const ok = me && (me.role === "admin" || (struct !== "admin" && me.partenaire_id === struct));
       if (!ok) {
@@ -1053,8 +1057,20 @@ async function loginScreen(mode = "login"){
         return lmsg(struct === "admin" ? "Ce compte n'a pas les droits d'administrateur." : "Ce compte n'est pas rattaché à la structure choisie.", true);
       }
       authBusy = false; boot();
-    } finally { btn.disabled = false; }
+    } finally { if (!keepDisabled) btn.disabled = false; }
   };
+}
+function signupDone(email, maybe){
+  authShell(`<div style="text-align:left;margin-top:20px">
+    <p style="font-weight:600;margin:0 0 10px">${maybe ? "Votre demande d'inscription a déjà été enregistrée." : "Votre compte a été créé."}</p>
+    <ol style="padding-left:20px;margin:0;line-height:1.6">
+      <li>Ouvrez l'email envoyé à <b>${esc(email)}</b> (pensez au dossier « spam ») et cliquez sur le lien de confirmation.</li>
+      <li>Revenez sur cette page et connectez-vous avec votre structure, votre email et votre mot de passe.</li>
+      <li>L'administrateur valide ensuite votre compte pour que vous puissiez mettre à jour vos activités.</li>
+    </ol>
+    <p style="color:var(--muted);margin:14px 0 0">Inutile de recommencer l'inscription : chaque nouvel essai renvoie un email et peut être bloqué temporairement.</p></div>
+    <button class="btnp" id="lBack" style="margin-top:20px">Aller à la connexion</button>`);
+  $("#lBack").onclick = () => loginScreen("login");
 }
 function recoveryScreen(){
   authShell(`<p style="color:var(--muted);margin:18px 0 0">Choisissez votre nouveau mot de passe.</p>

@@ -87,3 +87,18 @@ alter policy equipe_suppr_fichiers on storage.objects to authenticated
 -- insert into public.profils (user_id, email, role, actif)
 -- select id, email, 'admin', true from auth.users where email = 'ADRESSE_ADMIN'
 -- on conflict (user_id) do update set role = 'admin', actif = true;
+
+-- Création du profil dès l'inscription (en attente de validation), pour que l'administrateur
+-- voie tout de suite le compte, même si l'utilisateur n'a pas encore ouvert l'application.
+create or replace function public.creer_profil_inscription() returns trigger
+language plpgsql security definer set search_path = '' as $$
+begin
+  insert into public.profils (user_id, email, partenaire_id)
+  values (new.id, new.email, (select p.id from public.partenaires p where p.id::text = new.raw_user_meta_data->>'partenaire_id'))
+  on conflict (user_id) do nothing;
+  return new;
+exception when others then
+  return new; -- ne jamais bloquer une inscription
+end $$;
+create trigger creer_profil_a_l_inscription after insert on auth.users
+  for each row execute function public.creer_profil_inscription();
