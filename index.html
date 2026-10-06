@@ -799,7 +799,11 @@ async function saveAccount(el){
   }
   const { error } = await sb.from("profils").update({[f]: val}).eq("user_id", uid);
   if (error) { toast("Échec : " + error.message); return views.comptes(); }
-  toast("Compte mis à jour");
+  if (f === "actif" && val) {
+    let envoye = false;
+    try { envoye = (await callFn("admin-comptes", { action: "notifier_validation", user_id: uid })).envoye; } catch (e) {}
+    toast(envoye ? "Compte validé : un e-mail a été envoyé à la personne" : "Compte validé");
+  } else toast("Compte mis à jour");
   if (f === "actif") views.comptes();
 }
 
@@ -907,7 +911,7 @@ async function delTask(id){
 /* ================= Routage ================= */
 function go(h, replace){ if (replace) { history.replaceState(null, "", h); render(); } else location.hash = h; }
 function render(){
-  if (sb && (!session || recovering)) return;
+  if (sb && (!session || recovering || !(me && me.actif))) return;
   const [, v = "dashboard", arg] = (location.hash.startsWith("#/") ? location.hash : "#/dashboard").split("/");
   formState = null;
   closeDrawer();
@@ -1064,17 +1068,24 @@ async function loginScreen(mode = "login"){
     let keepDisabled = false;
     try {
       if (mode === "signup") {
-        try { await callFn("inscription", { email, password: pass, partenaire_id: struct }); }
+        let res;
+        try { res = await callFn("inscription", { email, password: pass, partenaire_id: struct }); }
         catch (e) { return lmsg(e.message, true); }
-        keepDisabled = true; authBusy = true;
+        keepDisabled = true;
+        if (res.confirmation === "envoyee") return checkMailScreen(email);
+        authBusy = true;
         const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
         if (error) { authBusy = false; return signupDone(email); }
         session = data.session; await loadMe(); authBusy = false;
-        toast("Compte créé : en attente de validation par l'administrateur"); return boot();
+        return boot();
       }
       authBusy = true;
       const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
-      if (error) { authBusy = false; return lmsg(error.status === 429 ? "Trop de tentatives de connexion : patientez une minute, puis réessayez une seule fois." : authErr(error), true); }
+      if (error) {
+        authBusy = false;
+        if (/Email not confirmed/i.test(error.message)) return checkMailScreen(email, true);
+        return lmsg(error.status === 429 ? "Trop de tentatives de connexion : patientez une minute, puis réessayez une seule fois." : authErr(error), true);
+      }
       session = data.session; await loadMe();
       const ok = me && (me.role === "admin" || (struct !== "admin" && me.partenaire_id === struct));
       if (!ok) {
@@ -1084,6 +1095,48 @@ async function loginScreen(mode = "login"){
       authBusy = false; boot();
     } finally { if (!keepDisabled) btn.disabled = false; }
   };
+}
+function checkMailScreen(email, fromLogin){
+  authShell(`<div style="text-align:left;margin-top:20px">
+    <p style="font-weight:600;margin:0 0 10px">${fromLogin ? "Confirmez d'abord votre adresse e-mail" : "Votre compte a été créé : vérifiez votre boîte mail"}</p>
+    <ol style="padding-left:20px;margin:0;line-height:1.6">
+      <li>Ouvrez l'e-mail envoyé à <b>${esc(email)}</b> (regardez aussi dans « Courrier indésirable » ou « Spam »).</li>
+      <li>Cliquez sur « Confirmer mon adresse ».</li>
+      <li>L'administrateur valide ensuite votre compte ; vous pourrez alors vous connecter et accéder à la plateforme.</li>
+    </ol></div>
+    <button class="btnp" id="lBack" style="margin-top:20px">Aller à la connexion</button>
+    <button class="lnk" id="lResend">Je n'ai rien reçu : renvoyer l'e-mail</button>`);
+  $("#lBack").onclick = () => loginScreen("login");
+  $("#lResend").onclick = async () => {
+    const b = $("#lResend"); if (b.disabled) return; b.disabled = true; lmsg("Envoi en cours…");
+    try { await callFn("inscription", { action: "renvoyer", email }); lmsg("Un nouvel e-mail vient d'être envoyé à " + email + "."); }
+    catch (e) { lmsg(e.message, true); }
+    setTimeout(() => { b.disabled = false; }, 15000);
+  };
+}
+async function confirmScreen(token){
+  authShell(`<p style="margin:22px 0 0">Confirmation de votre adresse e-mail…</p>`);
+  history.replaceState(null, "", baseUrl() + "#/");
+  try {
+    const r = await callFn("confirmer", { token });
+    authShell(`<div style="text-align:left;margin-top:20px"><p style="font-weight:600;margin:0 0 10px">Adresse e-mail confirmée${r.email ? " : " + esc(r.email) : ""}</p>
+      <p style="margin:0;line-height:1.6">Votre compte est maintenant en attente de validation par l'administrateur. Dès qu'il sera validé, connectez-vous avec votre structure, votre e-mail et votre mot de passe.</p></div>
+      <button class="btnp" id="lBack" style="margin-top:20px">Aller à la connexion</button>`);
+  } catch (e) {
+    authShell(`<div style="text-align:left;margin-top:20px"><p style="font-weight:600;margin:0 0 10px">Confirmation impossible</p><p style="margin:0;line-height:1.6">${esc(e.message)}</p></div>
+      <button class="btnp" id="lBack" style="margin-top:20px">Aller à la connexion</button>`);
+  }
+  $("#lBack").onclick = () => loginScreen("login");
+}
+function pendingScreen(){
+  const nom = me?.partenaire_id ? (structures || []).find(p => p.id === me.partenaire_id)?.nom : "";
+  authShell(`<div style="text-align:left;margin-top:20px"><p style="font-weight:600;margin:0 0 10px">Compte en attente de validation</p>
+    <p style="margin:0;line-height:1.6">Votre compte <b>${esc(session.user.email)}</b>${nom ? " (" + esc(nom) + ")" : ""} a bien été enregistré. L'administrateur doit le valider avant que vous puissiez accéder à la plateforme et au tableau de bord.</p>
+    <p style="color:var(--muted);margin:12px 0 0">Vous serez informé par l'administrateur ; vous pouvez aussi revenir plus tard et cliquer sur « Vérifier à nouveau ».</p></div>
+    <button class="btnp" id="lRetry" style="margin-top:20px">Vérifier à nouveau</button>
+    <button class="lnk" id="lOut">Se déconnecter</button>`);
+  $("#lRetry").onclick = async () => { await loadMe(); if (me && me.actif) boot(); else toast("Votre compte n'est pas encore validé."); };
+  $("#lOut").onclick = () => sb.auth.signOut();
 }
 function signupDone(email){
   authShell(`<div style="text-align:left;margin-top:20px">
@@ -1121,9 +1174,14 @@ function applyAccess(){
 }
 async function boot(){
   $("#dLogo").innerHTML = $(".appbar .applogo").innerHTML; $("#dName").textContent = APPN(); document.title = APPN();
+  const conf = location.hash.match(/^#\/confirmer\/([0-9a-f]{64})$/);
+  if (sb && conf) { if (session) { await sb.auth.signOut(); } return confirmScreen(conf[1]); }
   if (sb && recovering && session) return recoveryScreen();
   if (sb && !session) return loginScreen();
-  try { if (sb && (!me || me.user_id !== session.user.id)) await loadMe(); await Store.load(); }
+  try { if (sb && (!me || me.user_id !== session.user.id)) await loadMe(); }
+  catch(err) { $("#main").innerHTML = `<div class="login"><h2 style="font-weight:400">Connexion à la base impossible</h2><p style="color:var(--muted)">${esc(err.message || err)}</p></div>`; return; }
+  if (sb && !(me && me.actif)) { await loadStructures(); return pendingScreen(); }
+  try { await Store.load(); }
   catch(err) { $("#main").innerHTML = `<div class="login"><h2 style="font-weight:400">Connexion à la base impossible</h2><p style="color:var(--muted)">${esc(err.message || err)}</p></div>`; return; }
   applyAccess();
   if (!location.hash.startsWith("#/")) history.replaceState(null, "", baseUrl() + "#/dashboard");

@@ -102,3 +102,35 @@ exception when others then
 end $$;
 create trigger creer_profil_a_l_inscription after insert on auth.users
   for each row execute function public.creer_profil_inscription();
+
+-- Accès réservé aux comptes validés : un compte en attente ne lit aucune donnée
+-- (ni activités, ni partenaires, ni tableau de bord) ; il ne voit que son propre profil.
+create or replace function public.est_actif() returns boolean
+language sql stable security definer set search_path = '' as $$
+  select exists (select 1 from public.profils where user_id = auth.uid() and actif);
+$$;
+alter policy taches_lecture on public.taches to authenticated using (public.est_actif());
+alter policy partenaires_lecture on public.partenaires to authenticated using (public.est_actif());
+alter policy notes_lecture on public.notes to authenticated using (public.est_actif());
+alter policy produits_lecture on public.produits to authenticated using (public.est_actif());
+
+-- E-mails de confirmation envoyés par les fonctions « inscription » et « confirmer » (Brevo)
+create table if not exists public.confirmations (
+  token text primary key,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  used_at timestamptz
+);
+alter table public.confirmations enable row level security;   -- accès serveur uniquement
+create table if not exists public.journal_emails (
+  id bigint generated always as identity primary key,
+  destinataire text, objet text, statut text, detail text,
+  created_at timestamptz not null default now()
+);
+alter table public.journal_emails enable row level security;  -- accès serveur uniquement
+create or replace function public.compte_par_email(adresse text) returns table(id uuid, confirme boolean)
+language sql stable security definer set search_path = '' as $$
+  select u.id, u.email_confirmed_at is not null from auth.users u where lower(u.email) = lower(adresse) limit 1;
+$$;
+revoke all on function public.compte_par_email(text) from public, anon, authenticated;
+grant execute on function public.compte_par_email(text) to service_role;
