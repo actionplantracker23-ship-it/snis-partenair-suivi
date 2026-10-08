@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
           method: "POST",
           headers: { "api-key": Deno.env.get("BREVO_API_KEY")!, "content-type": "application/json", accept: "application/json" },
           body: JSON.stringify({ sender: { email: Deno.env.get("BREVO_SENDER_EMAIL"), name: Deno.env.get("BREVO_SENDER_NAME") || APP },
-            to: [{ email: dest }], subject: `Votre compte est validé — ${APP}`, htmlContent: html }),
+            to: [{ email: dest }], subject: `Votre compte est validé sur la plateforme ${APP}`, htmlContent: html }),
         });
         if (!r.ok) { statut = "echec"; detail = `${r.status} ${(await r.text()).slice(0, 300)}`; }
       } catch (e) { statut = "echec"; detail = String(e).slice(0, 300); }

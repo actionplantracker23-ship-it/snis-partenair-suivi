@@ -91,7 +91,7 @@ ${r.ordre_du_jour ? `<p style="margin:20px 0 6px;font-weight:bold">Ordre du jour
           method: "POST",
           headers: { "api-key": Deno.env.get("BREVO_API_KEY")!, "content-type": "application/json", accept: "application/json" },
           body: JSON.stringify({ sender: { email: Deno.env.get("BREVO_SENDER_EMAIL"), name: Deno.env.get("BREVO_SENDER_NAME") || APP },
-            to: [{ email: d }], subject: `Invitation : ${r.titre} — ${dateFr(r.date)}`, htmlContent: html,
+            to: [{ email: d }], subject: `Invitation : ${r.titre}, le ${dateFr(r.date)}`, htmlContent: html,
             attachment: [{ name: "invitation.ics", content: piece }] }),
         });
         if (!res.ok) { statut = "echec"; detail = `${res.status} ${(await res.text()).slice(0, 300)}`; }

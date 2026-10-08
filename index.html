@@ -556,8 +556,8 @@ views.partenaire = (id) => {
   const m = mono(p.nom);
   $("#main").innerHTML = `<div class="detail">
     <div class="fld"><div class="lb">Nom</div><div class="vl">${esc(p.nom)}</div></div>
-    <div class="fld"><div class="lb">Email</div><div class="row"><div class="vl">${esc(p.email || "—")}</div>${p.email ? `<a class="mail" href="mailto:${esc(p.email)}" aria-label="Écrire">${ic("i-mail")}</a>` : ""}</div></div>
-    <div class="fld"><div class="lb">Personnes à contacter</div><div class="vl">${esc(p.contacts || "—")}</div></div>
+    <div class="fld"><div class="lb">Email</div><div class="row"><div class="vl">${esc(p.email || "Non renseigné")}</div>${p.email ? `<a class="mail" href="mailto:${esc(p.email)}" aria-label="Écrire">${ic("i-mail")}</a>` : ""}</div></div>
+    <div class="fld"><div class="lb">Personnes à contacter</div><div class="vl">${esc(p.contacts || "Non renseigné")}</div></div>
     <div class="fld"><div class="lb">Photo</div></div>
     <div class="photo">${p.photo ? `<img src="${esc(p.photo)}" alt="Logo ${esc(p.nom)}">` : `<span class="mono" style="color:${m.bg}">${esc(m.txt)}</span>`}</div>
     ${prev ? `<button class="navarr l" data-go="#/partenaire/${prev.id}" aria-label="Partenaire précédent">${ic("i-left")}</button>` : ""}
@@ -675,8 +675,8 @@ const RCOL = {"Planifiée":"#00873E","Tenue":"#4F6BD8","Reportée":"#9A6B00","An
 const R = id => (db.reunions || []).find(r => r.id === id);
 const hm = t => t ? String(t).slice(0,5).replace(":", "h") : "";
 const dateLong = d => new Date(d + "T00:00:00").toLocaleDateString("fr-FR", {weekday:"long", day:"numeric", month:"long", year:"numeric"});
-const rWhen = r => dateLong(r.date) + (r.heure_debut ? ", " + hm(r.heure_debut) + (r.heure_fin ? " – " + hm(r.heure_fin) : "") : "");
-const rParts = r => { const ids = r.partenaires || []; return ids.length && ids.length === db.partenaires.length ? "Tous les partenaires" : ids.map(id => P(id)?.nom).filter(Boolean).join(", ") || "—"; };
+const rWhen = r => dateLong(r.date) + (r.heure_debut ? (r.heure_fin ? ", de " + hm(r.heure_debut) + " à " + hm(r.heure_fin) : ", à " + hm(r.heure_debut)) : "");
+const rParts = r => { const ids = r.partenaires || []; return ids.length && ids.length === db.partenaires.length ? "Tous les partenaires" : ids.map(id => P(id)?.nom).filter(Boolean).join(", ") || "Aucun partenaire"; };
 const pillR = st => `<span class="pill" style="background:${RCOL[st] || "#6B6B6B"}">${esc(st)}</span>`;
 views.reunions = () => {
   chrome({title:"Réunions des partenaires", acts:["refresh"], nav:"reunions", fabs: isAdmin() ? [{k:"newR", icon:"i-plus", label:"Planifier une réunion"}] : []});
@@ -757,7 +757,7 @@ async function inviteReunion(id){
     dest = res.destinataires || [];
   } else dest = (r.partenaires || []).flatMap(pid => String(P(pid)?.email || "").split(/[,;\s]+/)).filter(e => /@/.test(e));
   if (!dest.length) return toast("Aucune adresse e-mail pour les partenaires concernés.");
-  const subject = `Invitation : ${r.titre} — ${dateLong(r.date)}`;
+  const subject = `Invitation : ${r.titre}, le ${dateLong(r.date)}`;
   const body = `Bonjour,\n\nVous êtes invité(e) à la réunion « ${r.titre} ».\n\nDate : ${rWhen(r)}\n${r.lieu ? "Lieu : " + r.lieu + "\n" : ""}${r.lien_visio ? "Lien de connexion : " + r.lien_visio + "\n" : ""}${r.ordre_du_jour ? "\nOrdre du jour :\n" + r.ordre_du_jour + "\n" : ""}\nDétails sur la plateforme : ${baseUrl()}#/reunion/${r.id}\n\nCordialement.`;
   const copy = async (txt, ok) => { try { await navigator.clipboard.writeText(txt); toast(ok); } catch (e) { toast("Copie impossible sur cet appareil."); } };
   sheet(`Invitation prête pour ${dest.length} destinataire(s). L'envoi automatique d'e-mails n'est pas encore activé : envoyez-la depuis votre messagerie.`, [
@@ -791,7 +791,7 @@ const groupBy = (arr, key) => { const m = new Map(); for (const x of arr) { cons
 const byFr = (a, b) => String(a).localeCompare(String(b), "fr");
 const tipOf = st => STATUTS.filter(s => st.c[s]).map(s => `${SLAB[s]} : ${st.c[s]}`).join("<br>") || "Aucune tâche";
 const pill = s => `<span class="st" style="background:${SCOL[s] || "#999"};color:${STXT[s] || "#fff"}">${esc(SLAB[s] || s)}</span>`;
-/* Barre empilée par statut ; scale = largeur relative (0–1) pour les barres horizontales comparées */
+/* Barre empilée par statut ; scale = largeur relative (de 0 à 1) pour les barres horizontales comparées */
 function stackBar(st, {labels = false, scale = 1} = {}){
   if (!st.n) return `<div class="sbar empty" style="width:${scale*100}%"></div>`;
   return `<div class="sbar" style="width:${Math.max(scale*100, 2)}%" data-tip="${esc(tipOf(st))}">` + STATUTS.filter(s => st.c[s]).map(s =>
@@ -890,7 +890,7 @@ views.comptes = async () => {
   const pend = data.filter(u => !u.actif).length;
   $("#main").innerHTML = `<div class="list"><h3>${data.length} compte(s)${pend ? ` · <b>${pend} en attente de validation</b>` : ""}</h3>` + data.map(u => `<div class="acct" data-uid="${u.user_id}">
       <div class="ae"><div class="t">${esc(u.email)}</div><div class="s ${u.actif ? "" : "pend"}">${u.actif ? "Validé" : "En attente de validation"} · inscrit le ${esc(new Date(u.created_at).toLocaleDateString("fr-FR"))}</div></div>
-      <select data-f="partenaire_id" aria-label="Structure"><option value="">— Aucune structure —</option>${db.partenaires.map(p => `<option value="${p.id}" ${p.id === u.partenaire_id ? "selected" : ""}>${esc(p.nom)}</option>`).join("")}</select>
+      <select data-f="partenaire_id" aria-label="Structure"><option value="">Aucune structure</option>${db.partenaires.map(p => `<option value="${p.id}" ${p.id === u.partenaire_id ? "selected" : ""}>${esc(p.nom)}</option>`).join("")}</select>
       <select data-f="role" aria-label="Rôle"><option value="partenaire" ${u.role === "partenaire" ? "selected" : ""}>Structure</option><option value="admin" ${u.role === "admin" ? "selected" : ""}>Administrateur</option></select>
       <div style="display:flex;flex-direction:column;gap:6px"><label><input type="checkbox" data-f="actif" ${u.actif ? "checked" : ""}> Validé</label>
       <button class="lnk" style="margin:0;padding:0;text-align:left;font-size:.85rem" data-pwd="${u.user_id}" data-mail="${esc(u.email)}">Nouveau mot de passe</button></div>

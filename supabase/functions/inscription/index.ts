@@ -62,7 +62,7 @@ async function envoyerConfirmation(userId: string, email: string): Promise<boole
   const token = crypto.randomUUID().replaceAll("-", "") + crypto.randomUUID().replaceAll("-", "");
   await admin.from("confirmations").insert({ token, user_id: userId });
   const lien = `${SITE}#/confirmer/${token}`;
-  return await envoyer(email, `Confirmez votre inscription — ${APP}`, gabarit(
+  return await envoyer(email, `Confirmez votre inscription à la plateforme ${APP}`, gabarit(
     "Confirmez votre adresse e-mail",
     `<p>Bonjour,</p><p>Une inscription à la plateforme <b>${APP}</b> a été demandée avec l'adresse <b>${esc(email)}</b>.</p>
      <p>Cliquez sur le bouton ci-dessous pour confirmer votre adresse. Votre compte sera ensuite examiné par l'administrateur, qui vous donnera accès à la plateforme.</p>
@@ -75,7 +75,7 @@ async function prevenirAdmins(email: string, structure: string) {
   const { data } = await admin.from("profils").select("email").eq("role", "admin").eq("actif", true);
   for (const a of data ?? []) {
     if (!a.email) continue;
-    await envoyer(a.email, `Nouvelle inscription à valider — ${structure}`, gabarit(
+    await envoyer(a.email, `Nouvelle inscription à valider : ${structure}`, gabarit(
       "Nouvelle inscription à valider",
       `<p>Un compte vient d'être créé sur la plateforme :</p>
        <p><b>Structure :</b> ${esc(structure)}<br><b>Adresse :</b> ${esc(email)}</p>
