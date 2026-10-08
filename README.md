@@ -22,3 +22,8 @@ Les règles sont appliquées dans la base Supabase (Row Level Security), voir `s
 - *Sign In / Providers → Email* : laisser activé. « Confirm email » peut rester activé (l'utilisateur confirme
   son adresse puis se connecte).
   Sera completer, application en cour de developpement
+
+## Contributeurs
+
+- Action Plan Tracker ([@actionplantracker23-ship-it](https://github.com/actionplantracker23-ship-it)) : conception, pilotage et validation
+- Claude (Anthropic) : développement
