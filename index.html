@@ -288,6 +288,20 @@ table.gt{width:100%;border-collapse:collapse;font-size:.9rem}
 .tip{position:fixed;z-index:50;pointer-events:none;background:#fff;color:#222;border:1px solid var(--line);box-shadow:0 4px 14px rgba(0,0,0,.15);border-radius:4px;padding:8px 10px;font-size:.85rem;max-width:280px;opacity:0;transition:opacity .1s}
 .tip.on{opacity:1}
 
+/* Réunions */
+.pill{display:inline-block;padding:4px 10px;border-radius:3px;font-size:.8rem;font-weight:500;white-space:nowrap;color:#fff}
+.rdate{width:58px;flex:none;text-align:center;border:1px solid var(--line);border-top:4px solid var(--navy);padding:4px 0;line-height:1.1;background:#fff}
+.rdate b{display:block;font-size:1.5rem;font-weight:600;color:var(--navy)}
+.rdate small{display:block;font-size:.75rem;color:var(--muted);text-transform:uppercase}
+.list .it.past .rdate{border-top-color:#BFC3C9}.list .it.past .rdate b{color:var(--muted)}
+.evt.meet{background:#E6A700;color:#1b1b1b}
+.ractions{display:flex;flex-wrap:wrap;gap:10px;padding:16px 20px 24px}
+.ractions .btnp{width:auto}
+.btns{background:#fff;color:var(--navy);border:1px solid var(--navy);border-radius:4px;padding:12px 18px;font-weight:500}
+.timepair{display:flex;gap:10px;align-items:center}.timepair input{flex:1}
+.cmt{width:100%;min-width:200px;min-height:54px;border:1px solid #D9DDE2;border-radius:3px;padding:6px 8px;font:inherit;font-size:.85rem;resize:vertical;background:#FFFEF7}
+.cmt:focus{border-color:var(--navy);background:#fff}
+.cmt-ro{font-size:.85rem;white-space:pre-wrap;min-width:160px;color:#333}
 /* Comptes utilisateurs */
 .acct{display:grid;grid-template-columns:1.4fr 1.2fr 150px 110px;gap:12px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line)}
 .acct select{border:1px solid #BFC3C9;border-radius:3px;padding:10px;background:#fff;width:100%}
@@ -337,7 +351,7 @@ table.gt{width:100%;border-collapse:collapse;font-size:.9rem}
   <a href="#/tache/new" data-nav="new" id="navNew"><svg class="i"><use href="#i-plus"/></svg>Nouvelle activité</a>
   <a href="#/tracker" data-nav="tracker"><svg class="i"><use href="#i-layers"/></svg>Tracker</a>
   <a href="#/calendar" data-nav="calendar"><svg class="i"><use href="#i-cal"/></svg>Calendar</a>
-  <a href="#/produits" data-nav="produits"><svg class="i"><use href="#i-list"/></svg>Produits</a>
+  <a href="#/reunions" data-nav="reunions"><svg class="i"><use href="#i-meet"/></svg>Réunions</a>
 </nav>
 <div class="formbar" id="formbar" hidden><button id="fCancel">Cancel</button><button class="save" id="fSave">Save</button></div>
 
@@ -349,6 +363,7 @@ table.gt{width:100%;border-collapse:collapse;font-size:.9rem}
   <a href="#/partenaires"><svg class="i"><use href="#i-users"/></svg>Partenaires SNIS</a>
   <a href="#/workstreams"><svg class="i"><use href="#i-pulse"/></svg>Workstreams</a>
   <a href="#/tracker-inline"><svg class="i"><use href="#i-table"/></svg>Tracker Inline</a>
+  <a href="#/reunions"><svg class="i"><use href="#i-meet"/></svg>Réunions des partenaires</a>
   <a href="#/comptes" id="navComptes" hidden><svg class="i"><use href="#i-key"/></svg>Comptes utilisateurs</a>
   <hr>
   <a href="#/about"><svg class="i"><use href="#i-info"/></svg>About</a>
@@ -365,6 +380,7 @@ table.gt{width:100%;border-collapse:collapse;font-size:.9rem}
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-dash" viewBox="0 0 24 24"><path d="M3.5 18a8.5 8.5 0 1 1 17 0"/><path d="M12 18l4.5-6"/></symbol>
+  <symbol id="i-meet" viewBox="0 0 24 24"><circle cx="7" cy="7" r="2.3"/><circle cx="17" cy="7" r="2.3"/><circle cx="12" cy="5.5" r="2.3"/><path d="M3 20v-3a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v3M3 17h18"/></symbol>
   <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h13M3 18h9"/></symbol>
   <symbol id="i-back" viewBox="0 0 24 24"><path d="M20 12H4M10 6l-6 6 6 6"/></symbol>
@@ -410,7 +426,7 @@ const PILIERS = ["Gouvernance","Information sanitaire","Ressources humaines","Fi
 const LS = "snis-partenaires-v1";
 const PAL = [["#B5172A","#fff"],["#0B6E8E","#fff"],["#1F3C88","#fff"],["#2E7D5B","#fff"],["#7A3E8E","#fff"],["#C46A10","#fff"],["#00577A","#fff"],["#5A6B2E","#fff"]];
 
-let db = {partenaires:[], taches:[], notes:[], produits:[]};
+let db = {partenaires:[], taches:[], notes:[], produits:[], reunions:[]};
 let sb = null, session = null;
 let me = null;            // profil du compte connecté : {role, partenaire_id, actif}
 let authBusy = false;     // connexion en cours : on vérifie la structure avant d'afficher l'application
@@ -460,7 +476,7 @@ const Store = {
   async load(){
     if (sb) {
       const out = {};
-      for (const t of ["partenaires","taches","notes","produits"]) {
+      for (const t of ["partenaires","taches","notes","produits","reunions"]) {
         const { data, error } = await sb.from(t).select("*");
         if (error) throw error; out[t] = data;
       }
@@ -468,6 +484,7 @@ const Store = {
     } else {
       try { const s = JSON.parse(localStorage.getItem(LS) || "null"); db = s && s.partenaires ? s : structuredClone(SEED); } catch(e) { db = structuredClone(SEED); }
     }
+    db.reunions ||= [];
     db.partenaires.sort((a,b) => a.nom.localeCompare(b.nom, "fr"));
   },
   async save(table, row){
@@ -560,7 +577,7 @@ function taskDetailHtml(t, inPanel){
     <div class="fld"><div class="lb">Task</div><div class="vl">${esc(t.task)}</div></div>
     <div class="fld"><div class="lb">Due</div><input class="datein" type="date" data-due="${t.id}" value="${esc(t.due||"")}" ${can ? "" : "disabled"}></div>
     <div class="fld"><div class="lb">Status Label</div><div class="vl">${esc(t.status)}</div></div>
-    ${f("Partenaire(s)", pNames(t))}${f("Activité", t.activite)}${f("Direction", t.direction)}${f("Pilier PNDS", t.pilier)}${f("Lien santé communautaire (SNSC)", t.snsc)}${f("Lien santé numérique", t.numerique)}
+    ${f("Partenaire(s)", pNames(t))}${f("Activité", t.activite)}${f("Direction", t.direction)}${f("Pilier PNDS", t.pilier)}${f("Lien santé communautaire (SNSC)", t.snsc)}${f("Lien santé numérique", t.numerique)}${f("Commentaire", t.commentaire)}
     <div class="sep"></div>
     <div class="relhead">Notes <span class="badge">${notes.length}</span></div>
     ${notes.map(n => `<div class="note">${ic("i-note")}<div><div class="d">${esc(new Date(n.created_at).toLocaleString("fr-FR"))}</div><div class="x">${esc(n.texte)}</div></div></div>`).join("")}
@@ -605,7 +622,9 @@ views.calendar = () => {
   if (!up) up = `<div class="empty" style="padding:20px;text-align:center">Aucune tâche datée.<br>Renseignez le champ Due d'une tâche.</div>`;
   const d = cal.d, todayIso = iso(new Date());
   const byDay = {}; for (const t of dated) (byDay[t.due] ||= []).push(t);
-  const evts = day => (byDay[day]||[]).map(t => `<button class="evt" data-go="#/tache/${t.id}" title="${esc(t.task)}">${esc(t.task)}</button>`).join("");
+  const meets = {}; for (const r of db.reunions || []) if (r.statut !== "Annulée") (meets[r.date] ||= []).push(r);
+  const evts = day => (meets[day]||[]).map(r => `<button class="evt meet" data-go="#/reunion/${r.id}" title="Réunion : ${esc(r.titre)}">${r.heure_debut ? hm(r.heure_debut) + " " : ""}${esc(r.titre)}</button>`).join("") +
+    (byDay[day]||[]).map(t => `<button class="evt" data-go="#/tache/${t.id}" title="${esc(t.task)}">${esc(t.task)}</button>`).join("");
   const days = ["lu","ma","me","je","ve","sa","di"];
   let body = "", label = "";
   if (cal.mode === "month") {
@@ -649,6 +668,107 @@ views.workstreams = () => {
   for (const t of db.taches.filter(t => match(t.task, t.activite, pNames(t)))) (groups[t.activite] ||= []).push(t);
   $("#main").innerHTML = `<div class="list">` + Object.keys(groups).sort((a,b)=>a.localeCompare(b,"fr")).map(g => `<h3>${esc(g)} <span class="badge">${groups[g].length}</span></h3>` + groups[g].map(t => `<button class="it" data-go="#/tache/${t.id}"><span style="flex:1"><div class="t">${esc(t.task)}</div><div class="s">${esc(t.status)} · ${esc(pNames(t))}</div></span>${ic("i-chev")}</button>`).join("")).join("") + `</div>`;
 };
+
+/* ================= Réunions des partenaires ================= */
+const RSTAT = ["Planifiée","Tenue","Reportée","Annulée"];
+const RCOL = {"Planifiée":"#00873E","Tenue":"#4F6BD8","Reportée":"#9A6B00","Annulée":"#6B6B6B"};
+const R = id => (db.reunions || []).find(r => r.id === id);
+const hm = t => t ? String(t).slice(0,5).replace(":", "h") : "";
+const dateLong = d => new Date(d + "T00:00:00").toLocaleDateString("fr-FR", {weekday:"long", day:"numeric", month:"long", year:"numeric"});
+const rWhen = r => dateLong(r.date) + (r.heure_debut ? ", " + hm(r.heure_debut) + (r.heure_fin ? " – " + hm(r.heure_fin) : "") : "");
+const rParts = r => { const ids = r.partenaires || []; return ids.length && ids.length === db.partenaires.length ? "Tous les partenaires" : ids.map(id => P(id)?.nom).filter(Boolean).join(", ") || "—"; };
+const pillR = st => `<span class="pill" style="background:${RCOL[st] || "#6B6B6B"}">${esc(st)}</span>`;
+views.reunions = () => {
+  chrome({title:"Réunions des partenaires", acts:["refresh"], nav:"reunions", fabs: isAdmin() ? [{k:"newR", icon:"i-plus", label:"Planifier une réunion"}] : []});
+  const today = iso(new Date()), key = r => r.date + (r.heure_debut || "");
+  const all = [...(db.reunions || [])].sort((a, b) => key(a).localeCompare(key(b)));
+  const next = all.filter(r => r.date >= today), past = all.filter(r => r.date < today).reverse();
+  const card = (r, old) => { const d = new Date(r.date + "T00:00:00");
+    return `<button class="it ${old ? "past" : ""}" data-go="#/reunion/${r.id}"><span class="rdate"><b>${d.getDate()}</b><small>${d.toLocaleDateString("fr-FR", {month:"short"})} ${String(d.getFullYear()).slice(2)}</small></span>
+      <span style="flex:1;min-width:0"><div class="t">${esc(r.titre)}</div><div class="s">${esc(rWhen(r))}${r.lieu ? " · " + esc(r.lieu) : r.lien_visio ? " · En ligne" : ""}</div><div class="s">${esc(rParts(r))}</div></span>${pillR(r.statut)}</button>`; };
+  $("#main").innerHTML = `<div class="list">
+    <h3>À venir <span class="badge">${next.length}</span></h3>${next.length ? next.map(r => card(r, false)).join("") : `<div class="it" style="cursor:default;color:var(--muted)">Aucune réunion planifiée.${isAdmin() ? " Utilisez le bouton + pour en planifier une." : ""}</div>`}
+    <h3>Passées <span class="badge">${past.length}</span></h3>${past.length ? past.map(r => card(r, true)).join("") : `<div class="it" style="cursor:default;color:var(--muted)">Aucune réunion passée.</div>`}</div>`;
+};
+views.reunion = (id) => {
+  if (id === "new") return reunionForm(null);
+  const r = R(id); if (!r) return go("#/reunions", true);
+  chrome({title:"Réunion", back:true, acts: isAdmin() ? ["trash", "refresh"] : ["refresh"], fabs: isAdmin() ? [{k:"editR", icon:"i-edit", label:"Modifier"}] : []});
+  const f = (lb, v, raw) => v ? `<div class="fld"><div class="lb">${lb}</div><div class="vl" style="font-size:1.1rem">${raw ? v : esc(v)}</div></div>` : "";
+  $("#main").innerHTML = `<div class="detail" style="padding-bottom:110px">
+    <div class="fld"><div class="lb">Réunion</div><div class="vl">${esc(r.titre)}</div></div>
+    <div class="fld"><div class="lb">Statut</div><div>${pillR(r.statut)}</div></div>
+    ${f("Date et heure", rWhen(r))}${f("Lieu", r.lieu)}
+    ${r.lien_visio ? f("Visioconférence", `<a href="${esc(r.lien_visio)}" target="_blank" rel="noopener">${esc(r.lien_visio)}</a>`, true) : ""}
+    ${f("Partenaires concernés", rParts(r))}${f("Ordre du jour", r.ordre_du_jour)}${f("Compte rendu", r.compte_rendu)}
+    ${isAdmin() ? f("Invitation", r.invitation_envoyee_le ? "Envoyée le " + new Date(r.invitation_envoyee_le).toLocaleString("fr-FR", {dateStyle:"long", timeStyle:"short"}) : "Pas encore envoyée") : ""}
+    <div class="ractions">${isAdmin() ? `<button class="btnp" data-rinvite="${r.id}">Envoyer l'invitation par e-mail</button>` : ""}<button class="btns" data-rics="${r.id}">Ajouter à mon agenda</button></div></div>`;
+};
+function reunionForm(id){
+  if (!isAdmin()) { toast("Seul l'administrateur planifie les réunions."); return go("#/reunions", true); }
+  const r = id ? R(id) : {id:uid(), titre:"", date:iso(new Date(Date.now() + 7*864e5)), heure_debut:"09:00", heure_fin:"11:00", lieu:"", lien_visio:"", ordre_du_jour:"", partenaires:db.partenaires.map(p => p.id), statut:"Planifiée", compte_rendu:""};
+  if (id && !r) return go("#/reunions", true);
+  openForm(id ? "Modifier la réunion" : "Planifier une réunion",
+    formRow("Titre", `<input name="titre" value="${esc(r.titre)}" placeholder="Ex. : Réunion trimestrielle des partenaires SNIS" required>`, true) +
+    formRow("Date", `<input type="date" name="date" value="${esc(r.date)}" required>`, true) +
+    formRow("Horaire", `<div class="timepair"><input type="time" name="hd" value="${esc(String(r.heure_debut || "").slice(0,5))}" aria-label="Heure de début"><span>à</span><input type="time" name="hf" value="${esc(String(r.heure_fin || "").slice(0,5))}" aria-label="Heure de fin"></div>`) +
+    formRow("Lieu", `<input name="lieu" value="${esc(r.lieu)}" placeholder="Ex. : Salle de réunion de la DSI, Ouagadougou">`) +
+    formRow("Lien de visioconférence", `<input type="url" name="lien" value="${esc(r.lien_visio)}" placeholder="https://…">`) +
+    formRow("Partenaires concernés", `<div style="display:flex;gap:14px;padding-top:6px"><button type="button" class="lnk" style="margin:0" onclick="this.form.querySelectorAll('input[name=rp]').forEach(c=>c.checked=true)">Tous</button><button type="button" class="lnk" style="margin:0" onclick="this.form.querySelectorAll('input[name=rp]').forEach(c=>c.checked=false)">Aucun</button></div><div class="checks">${db.partenaires.map(p => `<label><input type="checkbox" name="rp" value="${p.id}" ${(r.partenaires || []).includes(p.id) ? "checked" : ""}> ${esc(p.nom)}</label>`).join("")}</div>`, true) +
+    formRow("Ordre du jour", `<textarea name="odj" placeholder="1. …&#10;2. …">${esc(r.ordre_du_jour)}</textarea>`) +
+    formRow("Statut", `<select name="statut">${RSTAT.map(x => `<option ${x === r.statut ? "selected" : ""}>${x}</option>`).join("")}</select>`) +
+    formRow("Compte rendu", `<textarea name="cr" placeholder="À renseigner après la réunion">${esc(r.compte_rendu)}</textarea>`),
+    async f => {
+      const pts = [...f.querySelectorAll("input[name=rp]:checked")].map(x => x.value);
+      if (!f.titre.value.trim() || !f.date.value) return toast("Renseignez le titre et la date.");
+      if (!pts.length) return toast("Choisissez au moins un partenaire.");
+      if (f.hd.value && f.hf.value && f.hf.value <= f.hd.value) return toast("L'heure de fin doit suivre l'heure de début.");
+      const row = {...r, titre:f.titre.value.trim(), date:f.date.value, heure_debut:f.hd.value || null, heure_fin:f.hf.value || null, lieu:f.lieu.value.trim(),
+        lien_visio:f.lien.value.trim(), partenaires:pts, ordre_du_jour:f.odj.value.trim(), statut:f.statut.value, compte_rendu:f.cr.value.trim()};
+      await Store.save("reunions", row);
+      toast(id ? "Réunion mise à jour" : "Réunion planifiée"); go("#/reunion/" + row.id, true);
+      if (!id) sheet("Envoyer l'invitation aux partenaires concernés maintenant ?", [{label:"Envoyer l'invitation", run(){ inviteReunion(row.id); }}, {label:"Plus tard", run(){}}]);
+    }, id ? "#/reunion/" + id : "#/reunions");
+}
+function icsReunion(r){
+  const d = r.date.replaceAll("-", ""), t = x => String(x).slice(0,5).replace(":", "") + "00";
+  const txt = v => String(v || "").replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/[,;]/g, c => "\\" + c);
+  const now = new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z";
+  return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Plan des partenaires SNIS//FR","METHOD:PUBLISH","BEGIN:VEVENT", `UID:${r.id}@snis-partenaires`, `DTSTAMP:${now}`,
+    r.heure_debut ? `DTSTART:${d}T${t(r.heure_debut)}Z` : `DTSTART;VALUE=DATE:${d}`,
+    r.heure_debut ? `DTEND:${d}T${t(r.heure_fin || r.heure_debut)}Z` : `DTEND;VALUE=DATE:${d}`,
+    `SUMMARY:${txt(r.titre)}`, `LOCATION:${txt(r.lieu || r.lien_visio)}`, `DESCRIPTION:${txt((r.ordre_du_jour || "") + (r.lien_visio ? "\n\nLien : " + r.lien_visio : ""))}`,
+    "END:VEVENT","END:VCALENDAR"].join("\r\n");
+}
+function downloadIcs(r){
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([icsReunion(r)], {type:"text/calendar"}));
+  a.download = `reunion_${r.date}.ics`; document.body.appendChild(a); a.click(); a.remove();
+}
+async function inviteReunion(id){
+  const r = R(id); if (!r) return;
+  let dest = [];
+  if (sb) {
+    toast("Préparation de l'invitation…");
+    let res; try { res = await callFn("reunions", { action: "inviter", reunion_id: id }); } catch (e) { return toast(e.message); }
+    if (res.envoye) {
+      r.invitation_envoyee_le = new Date().toISOString(); render();
+      return toast(`Invitation envoyée à ${res.nb} destinataire(s)` + (res.echecs?.length ? ` ; échec pour ${res.echecs.length}` : ""));
+    }
+    dest = res.destinataires || [];
+  } else dest = (r.partenaires || []).flatMap(pid => String(P(pid)?.email || "").split(/[,;\s]+/)).filter(e => /@/.test(e));
+  if (!dest.length) return toast("Aucune adresse e-mail pour les partenaires concernés.");
+  const subject = `Invitation : ${r.titre} — ${dateLong(r.date)}`;
+  const body = `Bonjour,\n\nVous êtes invité(e) à la réunion « ${r.titre} ».\n\nDate : ${rWhen(r)}\n${r.lieu ? "Lieu : " + r.lieu + "\n" : ""}${r.lien_visio ? "Lien de connexion : " + r.lien_visio + "\n" : ""}${r.ordre_du_jour ? "\nOrdre du jour :\n" + r.ordre_du_jour + "\n" : ""}\nDétails sur la plateforme : ${baseUrl()}#/reunion/${r.id}\n\nCordialement.`;
+  const copy = async (txt, ok) => { try { await navigator.clipboard.writeText(txt); toast(ok); } catch (e) { toast("Copie impossible sur cet appareil."); } };
+  sheet(`Invitation prête pour ${dest.length} destinataire(s). L'envoi automatique d'e-mails n'est pas encore activé : envoyez-la depuis votre messagerie.`, [
+    {label:"Ouvrir ma messagerie (destinataires en copie cachée)", run(){ location.href = `mailto:?bcc=${encodeURIComponent(dest.join(","))}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`; }},
+    {label:"Copier les adresses des destinataires", run(){ copy(dest.join(", "), "Adresses copiées"); }},
+    {label:"Copier le texte de l'invitation", run(){ copy(subject + "\n\n" + body, "Texte copié"); }},
+    {label:"Télécharger l'invitation agenda (.ics) à joindre", run(){ downloadIcs(r); }},
+    {label:"Marquer l'invitation comme envoyée", async run(){ await Store.save("reunions", {...r, invitation_envoyee_le: new Date().toISOString()}); toast("Invitation marquée comme envoyée"); render(); }},
+    {label:"Fermer", run(){}}
+  ]);
+}
 
 views.about = () => {
   chrome({title:"About", back:true});
@@ -729,6 +849,8 @@ function dashStats(tasks){
       `<tr class="r"><td>${esc(a.nom)}</td><td class="n">${a.st.n}</td><td class="n">${a.st.pct} %</td><td>${stackBar(a.st)}</td><td>${pbar(a.st.pct)}</td></tr>`).join("")).join("") +
     `</tbody><tfoot><tr><td colspan="5">% calculé hors tâches annulées. Survolez une barre pour le détail.</td></tr></tfoot></table></div>`;
   return `<div class="kpis">${kpi("Tâches suivies", all.n)}${kpi("Tâches achevées", all.c.Complete, `/ ${all.actives} · ${all.pct} %`)}${kpi("Activités finalisées", nActFin, `/ ${acts.length}`)}${kpi("Piliers finalisés", nPilFin, `/ ${pil.length}`)}${kpi("Tâches en retard", all.late, "", all.late ? "warn" : "")}</div>
+    ${(() => { const today = iso(new Date()); const nx = (db.reunions || []).filter(r => r.date >= today && r.statut !== "Annulée").sort((a, b) => (a.date + (a.heure_debut || "")).localeCompare(b.date + (b.heure_debut || ""))).slice(0, 3);
+      return nx.length ? `<section class="card"><h2>Prochaines réunions</h2><div class="cb dlist" style="padding:0">${nx.map(r => `<div class="upit" data-go="#/reunion/${r.id}"><div class="r1"><span>${esc(r.titre)}</span><small>${esc(r.statut)}</small></div><div class="p">${esc(rWhen(r))}${r.lieu ? " · " + esc(r.lieu) : ""}</div></div>`).join("")}</div></section>` : ""; })()}
     <div class="dgrid">
       <section class="card"><h2>Activités finalisées par pilier PNDS</h2><p class="sub">Une activité est finalisée quand toutes ses tâches (hors annulées) sont achevées.</p><div class="cb">${pil.length ? pilTable : "Aucune activité."}</div></section>
       <section class="card"><h2>Répartition des tâches par statut</h2><p class="sub">${dash.p ? esc(P(dash.p)?.nom || "") : "Ensemble des partenaires"}</p><div class="cb">${donut(all)}</div></section>
@@ -742,12 +864,12 @@ function dashSynth(tasks){
   const rows = [...tasks].sort((a, b) => byFr(a.pilier || "~", b.pilier || "~") || byFr(a.activite, b.activite) || STATUTS.indexOf(a.status) - STATUTS.indexOf(b.status));
   const groups = [...groupBy(rows, t => t.pilier || "Non rattaché")];
   return `<section class="card"><div class="gtw"><table class="gt"><caption><b>Plan des partenaires SNIS</b><span>État détaillé de la mise en œuvre, par pilier PNDS et par activité${dash.p ? ` · ${esc(P(dash.p)?.nom || "")}` : ""}</span></caption>
-    <thead><tr><th>Activité</th><th>Tâche</th><th>Partenaire(s)</th><th>Direction</th><th>Échéance</th><th>Statut</th></tr></thead><tbody>` +
+    <thead><tr><th>Activité</th><th>Tâche</th><th>Partenaire(s)</th><th>Direction</th><th>Échéance</th><th>Statut</th><th>Commentaires</th></tr></thead><tbody>` +
     (groups.length ? groups.map(([pl, ts]) => { let last = null; const st = stats(ts);
-      return `<tr class="grp"><td colspan="6">${esc(pl)}<small>${ts.length} tâche(s) · ${st.pct} % achevées</small></td></tr>` + ts.map(t => { const cont = t.activite === last; last = t.activite;
-        return `<tr class="r ${cont ? "cont-row" : ""}" data-go="#/tache/${t.id}"><td class="act">${esc(t.activite)}</td><td class="wrap">${esc(t.task)}</td><td>${esc(pNames(t))}</td><td>${esc(t.direction || "")}</td><td style="white-space:nowrap">${fmtD(t.due)}</td><td>${pill(t.status)}</td></tr>`; }).join(""); }).join("")
-      : `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:30px">Aucune tâche.</td></tr>`) +
-    `</tbody><tfoot><tr><td colspan="6">${tasks.length} tâche(s). Cliquez sur une ligne pour ouvrir la tâche.</td></tr></tfoot></table></div></section>`;
+      return `<tr class="grp"><td colspan="7">${esc(pl)}<small>${ts.length} tâche(s) · ${st.pct} % achevées</small></td></tr>` + ts.map(t => { const cont = t.activite === last; last = t.activite;
+        return `<tr class="r ${cont ? "cont-row" : ""}" data-go="#/tache/${t.id}"><td class="act">${esc(t.activite)}</td><td class="wrap">${esc(t.task)}</td><td>${esc(pNames(t))}</td><td>${esc(t.direction || "")}</td><td style="white-space:nowrap">${fmtD(t.due)}</td><td>${pill(t.status)}</td><td>${canEditTask(t) ? `<textarea class="cmt" data-cmt="${t.id}" placeholder="Ajouter un commentaire…" aria-label="Commentaire">${esc(t.commentaire || "")}</textarea>` : `<div class="cmt-ro">${esc(t.commentaire || "")}</div>`}</td></tr>`; }).join(""); }).join("")
+      : `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:30px">Aucune tâche.</td></tr>`) +
+    `</tbody><tfoot><tr><td colspan="7">${tasks.length} tâche(s). Cliquez sur une ligne pour ouvrir la tâche ; chaque structure renseigne la colonne « Commentaires » de ses activités (enregistrement automatique).</td></tr></tfoot></table></div></section>`;
 }
 /* Info-bulle au survol des graphiques */
 document.addEventListener("scroll", () => $("#tip").classList.remove("on"), true);
@@ -830,13 +952,14 @@ views.tacheForm = (id) => {
     formRow("Direction", `<input name="direction" list="dlD" value="${esc(t.direction)}">${dl("dlD", db.taches.map(x=>x.direction))}`) +
     formRow("Pilier PNDS", `<select name="pilier"><option value="">À rattacher</option>${PILIERS.map(p => `<option ${p===t.pilier?"selected":""}>${p}</option>`).join("")}</select>`) +
     formRow("Lien santé communautaire (SNSC)", `<input name="snsc" list="dlS" value="${esc(t.snsc)}">${dl("dlS", db.taches.map(x=>x.snsc))}`) +
-    formRow("Lien santé numérique", `<input name="numerique" list="dlN" value="${esc(t.numerique)}">${dl("dlN", db.taches.map(x=>x.numerique))}`),
+    formRow("Lien santé numérique", `<input name="numerique" list="dlN" value="${esc(t.numerique)}">${dl("dlN", db.taches.map(x=>x.numerique))}`) +
+    formRow("Commentaire", `<textarea name="commentaire" placeholder="État d'avancement, difficultés, prochaines étapes…">${esc(t.commentaire || "")}</textarea>`),
     async f => {
       const pts = [...f.querySelectorAll("input[name=pt]:checked")].map(x => x.value);
       if (mine && !pts.includes(mine)) pts.push(mine);
       if (!pts.length) return toast("Choisissez au moins un partenaire.");
       if (!f.activite.value.trim() || !f.task.value.trim()) return toast("Renseignez l'activité et la tâche.");
-      await Store.save("taches", {...t, partenaires:pts, activite:f.activite.value.trim(), task:f.task.value.trim(), due:f.due.value||null, status:f.status.value, direction:f.direction.value.trim(), pilier:f.pilier.value, snsc:f.snsc.value.trim(), numerique:f.numerique.value.trim()});
+      await Store.save("taches", {...t, partenaires:pts, activite:f.activite.value.trim(), task:f.task.value.trim(), due:f.due.value||null, status:f.status.value, direction:f.direction.value.trim(), pilier:f.pilier.value, snsc:f.snsc.value.trim(), numerique:f.numerique.value.trim(), commentaire:f.commentaire.value.trim()});
       selTask = t.id; toast(id ? "Tâche mise à jour" : "Activité ajoutée"); go("#/tache/" + t.id, true);
     }, id ? "#/tache/" + id : "#/tracker");
 };
@@ -919,6 +1042,7 @@ function render(){
   if (v === "partenaire-edit") return views.partenaireForm(arg);
   if (v === "tache-edit") return views.tacheForm(arg);
   if (v === "produit" && arg === "new") return views.produitForm();
+  if (v === "reunion-edit") return reunionForm(arg);
   (views[v] || views.dashboard)(arg);
 }
 window.addEventListener("hashchange", render);
@@ -930,6 +1054,9 @@ $("#scrim").onclick = closeDrawer;
 document.addEventListener("keydown", e => { if (e.key === "Escape") { closeDrawer(); $("#sheet").classList.remove("on"); } });
 
 document.addEventListener("click", async e => {
+  if (e.target.closest(".cmt")) return;
+  const ri = e.target.closest("[data-rinvite]"); if (ri) return inviteReunion(ri.dataset.rinvite);
+  const rc = e.target.closest("[data-rics]"); if (rc) { const r = R(rc.dataset.rics); if (r) downloadIcs(r); return; }
   const g = e.target.closest("[data-go]"); 
   const more = e.target.closest("[data-more]");
   const delp = e.target.closest("[data-delprod]");
@@ -950,6 +1077,8 @@ document.addEventListener("click", async e => {
     if (k === "editT") return go("#/tache-edit/" + tid);
     if (k === "note") return noteForm(tid);
     if (k === "newProd") return go("#/produit/new");
+    if (k === "newR") return go("#/reunion/new");
+    if (k === "editR") return go("#/reunion-edit/" + arg);
   }
   const a = e.target.closest("[data-act]");
   if (a) {
@@ -963,12 +1092,16 @@ document.addEventListener("click", async e => {
     if (act === "trash" && isAdmin()) {
       if (v === "partenaire") return confirmDel("Supprimer ce partenaire ? Ses tâches restent dans le tracker.", async () => { await Store.remove("partenaires", arg); for (const t of db.taches.filter(t => (t.partenaires||[]).includes(arg))) await Store.save("taches", {...t, partenaires:t.partenaires.filter(x => x !== arg)}); toast("Partenaire supprimé"); go("#/partenaires", true); });
       if (v === "tache") return confirmDel("Supprimer cette tâche ?", async () => { await delTask(arg); go("#/tracker", true); });
+      if (v === "reunion") return confirmDel("Supprimer cette réunion ?", async () => { await Store.remove("reunions", arg); toast("Réunion supprimée"); go("#/reunions", true); });
     }
     if (act === "dots" && v === "partenaire") return sheet(null, [...(P(arg) && canEditPartner(P(arg)) ? [{label:"Modifier", run(){ go("#/partenaire-edit/" + arg); }}] : []), ...(canCreate() ? [{label:"Ajouter une tâche", run(){ go("#/tache/new"); }}] : []), {label:"Écrire un email", run(){ const p = P(arg); p?.email ? location.href = "mailto:" + p.email : toast("Aucun email renseigné."); }}]);
     if (act === "reset") return confirmDel("Remplacer les données locales par les données initiales ?", () => { localStorage.removeItem(LS); reload(); toast("Données réinitialisées"); });
   }
 });
 document.addEventListener("change", async e => {
+  const cm = e.target.closest("textarea.cmt");
+  if (cm) { const t = T(cm.dataset.cmt); if (t && canEditTask(t) && (t.commentaire || "") !== cm.value.trim()) {
+    try { await Store.save("taches", {...t, commentaire: cm.value.trim()}); toast("Commentaire enregistré"); } catch (err) {} } return; }
   if (e.target.id === "dashP") { dash.p = e.target.value; return views.dashboard(); }
   const af = e.target.closest("[data-f]"); if (af && af.closest(".acct")) return saveAccount(af);
   const d = e.target.closest("[data-due]");
@@ -980,7 +1113,7 @@ $("#fSave").onclick = async () => { if (!formState) return; const b = $("#fSave"
 $("#shareBtn").onclick = async () => { closeDrawer(); const url = location.href.split("#")[0]; try { if (navigator.share) await navigator.share({title:CFG.APP_NAME, url}); else { await navigator.clipboard.writeText(url); toast("Lien copié"); } } catch(e){} };
 $("#exportBtn").onclick = () => {
   closeDrawer();
-  const cols = [["Partenaires",t=>pNames(t)],["Activité",t=>t.activite],["Task",t=>t.task],["Due",t=>fmtD(t.due)],["Status",t=>t.status],["Direction",t=>t.direction],["Pilier PNDS",t=>t.pilier],["Lien SNSC",t=>t.snsc],["Lien santé numérique",t=>t.numerique],["Notes",t=>db.notes.filter(n=>n.tache_id===t.id).map(n=>n.texte).join(" | ")]];
+  const cols = [["Partenaires",t=>pNames(t)],["Activité",t=>t.activite],["Task",t=>t.task],["Due",t=>fmtD(t.due)],["Status",t=>t.status],["Direction",t=>t.direction],["Pilier PNDS",t=>t.pilier],["Lien SNSC",t=>t.snsc],["Lien santé numérique",t=>t.numerique],["Commentaire",t=>t.commentaire||""],["Notes",t=>db.notes.filter(n=>n.tache_id===t.id).map(n=>n.texte).join(" | ")]];
   const c = v => { const s = String(v ?? ""); return /[;"\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s; };
   const csv = "\ufeff" + [cols.map(x=>x[0]).join(";"), ...db.taches.map(t => cols.map(x => c(x[1](t))).join(";"))].join("\r\n");
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"})); a.download = `tracker_partenaires_snis_${iso(new Date())}.csv`; document.body.appendChild(a); a.click(); a.remove();

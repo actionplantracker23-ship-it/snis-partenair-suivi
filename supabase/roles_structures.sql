@@ -134,3 +134,28 @@ language sql stable security definer set search_path = '' as $$
 $$;
 revoke all on function public.compte_par_email(text) from public, anon, authenticated;
 grant execute on function public.compte_par_email(text) to service_role;
+
+-- Commentaires des activités (colonne « Commentaires » de la synthèse)
+alter table public.taches add column if not exists commentaire text default '';
+
+-- Réunions des partenaires : lecture par les comptes validés, gestion par l'administrateur
+create table if not exists public.reunions (
+  id uuid primary key default gen_random_uuid(),
+  titre text not null,
+  date date not null,
+  heure_debut time,
+  heure_fin time,
+  lieu text default '',
+  lien_visio text default '',
+  ordre_du_jour text default '',
+  partenaires uuid[] default '{}',
+  statut text not null default 'Planifiée' check (statut in ('Planifiée','Tenue','Reportée','Annulée')),
+  compte_rendu text default '',
+  invitation_envoyee_le timestamptz,
+  created_at timestamptz not null default now()
+);
+alter table public.reunions enable row level security;
+create policy reunions_lecture on public.reunions for select to authenticated using (public.est_actif());
+create policy reunions_admin_ajout on public.reunions for insert to authenticated with check (public.est_admin());
+create policy reunions_admin_maj on public.reunions for update to authenticated using (public.est_admin()) with check (public.est_admin());
+create policy reunions_admin_suppr on public.reunions for delete to authenticated using (public.est_admin());
