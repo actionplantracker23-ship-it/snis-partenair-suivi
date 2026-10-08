@@ -25,5 +25,5 @@ Les règles sont appliquées dans la base Supabase (Row Level Security), voir `s
 
 ## Contributeurs
 
-- Action Plan Tracker ([@actionplantracker23-ship-it](https://github.com/actionplantracker23-ship-it)) : conception, pilotage et validation
+- ZONGO Assetou ([@actionplantracker23-ship-it](https://github.com/actionplantracker23-ship-it)) : conception, pilotage et validation
 - Claude (Anthropic) : développement
